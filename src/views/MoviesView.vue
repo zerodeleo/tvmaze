@@ -13,11 +13,11 @@ import { getMovies } from '@/api/tvmaze'
 import type { Movies } from '@/interface/tvmaze'
 import { ref } from 'vue';
 
-const currentPage = ref(1);
+const page = ref(1);
 
 const options: UseQueryOptions<Movies, Error, Movies, Movies, QueryKey> = {
-  queryKey: ['movies'],
-  queryFn: () => getMovies(currentPage.value),
+  queryKey: ['movies', page],
+  queryFn: () => getMovies(page.value),
 };
 
 const { isLoading, isError, data, error } = useQuery(options);
