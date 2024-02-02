@@ -41,11 +41,4 @@ const goToPage = (page: number) => {
   currentPage.value = page;
 }
 
-watch(data, () => {
-  totalPages.value;
-  startIndex.value;
-  endIndex.value;
-  paginatedData.value;
-});
-
 </script>
