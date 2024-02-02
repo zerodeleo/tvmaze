@@ -5,17 +5,16 @@
     <p>{{ currentPage }}</p>
     <p>{{ totalPages }}</p>
     <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">Previous Page</button>
-    <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">Next Page</button>
+    <button @click="goToPage(currentPage + 1)">Next Page</button>
     <li v-for="movie in paginatedData" :key="movie.id">{{ movie.name }}</li>
   </ul>
 </template>
 
 <script setup lang="ts">
 import { useQuery } from '@tanstack/vue-query'
-import type { UseQueryOptions, QueryKey } from '@tanstack/vue-query'
 import { getMovies } from '@/api/tvmaze'
 import type { Movies } from '@/interface/tvmaze'
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
 const getStartIndex = () => (currentPage.value - 1) * moviesPerPage.value;
 const getEndIndex = () => startIndex.value + moviesPerPage.value;
@@ -25,20 +24,22 @@ const getTotalPages = () => Math.ceil(data.value!.length / moviesPerPage.value)
 const page = ref(1);
 const moviesPerPage = ref(10);
 const totalPages = computed(getTotalPages)
-const currentPage = ref(1);
+const currentPage = ref(24);
 const startIndex = computed(getStartIndex);
 const endIndex = computed(getEndIndex);
 const paginatedData = computed<Movies>(getPaginatedData);
 
-const options: UseQueryOptions<Movies, Error, Movies, Movies, QueryKey> = {
+const { isLoading, isError, data, error } = useQuery({
   queryKey: ['movies', page],
   queryFn: () => getMovies(page.value),
-};
+});
 
-const { isLoading, isError, data, error } = useQuery(options);
-
-const goToPage = (page: number) => {
-  currentPage.value = page;
+const goToPage = (p: number) => {
+  currentPage.value = p;
+  if (currentPage.value === totalPages.value) {
+    currentPage.value = 1;
+    page.value += 1;
+  }
 }
 
 </script>
