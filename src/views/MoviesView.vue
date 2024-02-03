@@ -4,11 +4,13 @@
   <section v-else-if="data">
     <p>{{ currentPage }}</p>
     <p>{{ totalPages }}</p>
-    <button @click="goToPage(currentPage - 1)">Previous Page</button>
-    <button @click="goToPage(currentPage + 1)">Next Page</button>
+    <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">Previous Page</button>
+    <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">Next Page</button>
     <h1>Genres:</h1>
     <ul>
-      <li @click="filterByGenres(genre)" class="inline-block m-2" :class="{ 'bg-blue-200': showGenres.find(g => g === genre) }"  v-for="genre in genres" :key="genre">{{genre}}</li>
+      <li class="inline-block m-2">
+        <button @click="filterByGenres(genre)" :class="{ 'bg-blue-200': showGenres.find(g => g === genre) }"  v-for="genre in genres" :key="genre">{{genre}}</button>
+      </li>
     </ul>
     <ul>
       <li v-for="movie in paginatedMovies" :key="movie.id">
@@ -57,7 +59,7 @@ const getValuesByKey = (key: string): string[] => {
 
 const movies = ref<Movies>([]);
 const page = ref(1);
-const moviesPerPage = ref(20);
+const moviesPerPage = ref(5);
 const currentPage = ref(1);
 const showGenres = ref<string[]>([]);
 
@@ -68,7 +70,7 @@ const endIndex = computed(getEndIndex);
 const paginatedMovies = computed<Movies>(getPaginatedMovies);
 const genres = computed<string[]>(() => getValuesByKey('genres')?.sort((a, b) => a.localeCompare(b)))
 const filteredMovies = computed<Movies>(() => {
-    return data.value?.concat(movies.value).filter(movie => showGenres.value.every(r => movie.genres.includes(r))).sort((a, b) => a.name.localeCompare(b.name)) ?? [];
+    return movies.value.filter(movie => showGenres.value.every(r => movie.genres.includes(r))).sort((a, b) => a.name.localeCompare(b.name)) ?? [];
 })
 
 const { isLoading, isError, data, error } = useQuery<Movies>({
@@ -84,10 +86,6 @@ const goToPage = (p: number) => {
   }
 }
 
-watch(showGenres, () => {
-  console.log(showGenres.value)
-})
-
 const filterByGenres = (genre: string) => {
   const arr = showGenres.value;
   if (!arr.includes(genre)) {     
@@ -97,5 +95,17 @@ const filterByGenres = (genre: string) => {
   }
   showGenres.value = arr;
 }
+
+watch(filteredMovies, () => {
+  if(filteredMovies.value.length < moviesPerPage.value) {
+    page.value += 1
+  }
+})
+
+watch(data, () => {
+  if(data.value) {
+    movies.value = movies.value.concat(data.value);
+  }
+})
 
 </script>
