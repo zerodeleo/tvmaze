@@ -4,14 +4,9 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
 </script>
 
 <template>
-  <div class="h-max bg-custom-400 theme-light">
+  <main class="bg-custom-400 text-custom-100 theme-light font-montserrat">
     <RouterView />
     <VueQueryDevtools />
-  </div>
+  </main>
 </template>
 
-<style>
-* {
-  @apply text-custom-100 font-montserrat
-}
-</style>

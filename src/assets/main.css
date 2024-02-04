@@ -24,3 +24,19 @@ h5,
 h6 {
   @apply font-playfair;
 }
+
+.common {
+  @apply text-custom-100 items-center rounded-lg cursor-pointer text-base justify-center leading-4 py-2 px-3 mr-2 mb-2 text-left select-none whitespace-pre break-normal;
+}
+
+.btn {
+  @apply common shadow-primary bg-custom-200 hover:bg-custom-200;
+}
+
+.btn-invert {
+  @apply common shadow-secondary bg-custom-400 hover:bg-custom-200 hover:shadow-primary text-opacity-50 hover:text-opacity-100;
+}
+
+.input {
+  @apply w-full shadow-secondary rounded py-2 px-3 mr-2 mb-2 focus:ring-custom-400 focus:border-custom-400;
+}

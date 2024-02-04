@@ -8,7 +8,12 @@ export default {
         montserrat: ['Montserrat', 'sans-serif'],
         playfair: ['Playfair Display', 'serif']
       },
-      boxShadow: '-10px -10px 30px 0 #fff,10px 10px 30px 0 #1d0dca17',
+      boxShadow: {
+        primary: '#422800 4px 4px 0 0',
+        secondary: '#dddddd 4px 4px 0 0',
+        'primary-invert': '#422800 -4px -4px 0 0',
+        'secondary-invert': '#dddddd -4px -4px 0 0'
+      },
       colors: {
         custom: {
           100: ({ opacityVariable, opacityValue }) => {

@@ -1,5 +1,3 @@
-export type Movies = Movie[]
-
 export interface Movie {
   id: number
   url: string
