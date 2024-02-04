@@ -9,4 +9,3 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
     <VueQueryDevtools />
   </main>
 </template>
-

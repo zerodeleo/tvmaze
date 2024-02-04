@@ -1,4 +1,4 @@
-import type { SortKey } from '@/interface'
+import type { GroupKey, SortKey } from '@/interface'
 import type { Movie } from '@/interface/tvmaze'
 
 export const getStartIndex = (currentPage: number, itemsPerPage: number) =>
@@ -77,7 +77,91 @@ export const sortMovies = (arr: Movie[], sortKey: SortKey) => {
   }
 }
 
-export const SORT_KEYS = [
+export const group = (arr: Movie[], groupKey: string) => {
+  switch (groupKey) {
+    case 'genres':
+      return groupByGenre(arr)
+    case 'status':
+      return groupByKey(arr, 'status').sort((a, b) => a[0].localeCompare(b[0]))
+    case 'rating':
+      return groupByDotNotationKey(arr, 'rating.average')
+    case 'network':
+      return groupByDotNotationKey(arr, 'network.name').sort((a, b) => a[0].localeCompare(b[0]))
+    case 'country':
+      return groupByDotNotationKey(arr, 'network.country.name').sort((a, b) =>
+        a[0].localeCompare(b[0])
+      )
+    case 'language':
+      return groupByKey(arr, 'language').sort((a, b) => a[0].localeCompare(b[0]))
+    case 'premiered-asc':
+      return groupByYear(arr)
+    case 'ended-asc':
+      return groupByYear(arr)
+    case 'premiered-desc':
+      return groupByYear(arr).reverse()
+    case 'ended-desc':
+      return groupByYear(arr).reverse()
+    default:
+      return groupByGenre(arr)
+  }
+}
+
+const groupByYear = (arr: Movie[]) => {
+  const cache = arr.reduce((cache: any, movie: Movie) => {
+    const key = movie['premiered']?.slice(0, -6)
+    if (!cache[key as keyof Movie]) {
+      cache[key as keyof Movie] = []
+    }
+    cache[key as keyof Movie].push(movie)
+    return cache
+  }, {})
+  return Object.entries(cache)
+}
+
+export const groupByGenre = (arr: Movie[]) => {
+  const cache = arr.reduce((cache: any, movie) => {
+    movie.genres.forEach((genre) => {
+      if (!cache[genre]) {
+        cache[genre] = []
+      }
+      cache[genre].push(movie)
+    })
+    return cache
+  }, {})
+  return Object.entries(cache)
+}
+
+const getNestedValue = (obj: any, keys: string[]) => {
+  return keys.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : null), obj)
+}
+
+export const groupByDotNotationKey = <T>(arr: T[], objKey: string) => {
+  const cache: { [key: string]: T[] } = {}
+  arr.forEach((movie: T) => {
+    const value = getNestedValue(movie, objKey.split('.'))
+    if (value !== null) {
+      if (!cache[value]) {
+        cache[value] = []
+      }
+      cache[value].push(movie)
+    }
+  })
+  return Object.entries(cache)
+}
+
+export const groupByKey = (arr: Movie[], objKey: keyof Movie) => {
+  const cache = arr.reduce((cache: any, movie: Movie) => {
+    const key = movie[objKey]
+    if (!cache[key]) {
+      cache[key] = []
+    }
+    cache[key].push(movie)
+    return cache
+  }, {})
+  return Object.entries(cache)
+}
+
+export const SORT_KEYS: { key: SortKey; display: string }[] = [
   { key: 'a-z', display: 'Alphabetical' },
   { key: 'ratings-asc', display: 'Ratings Low to High' },
   { key: 'ratings-desc', display: 'Ratings High to Low' },
@@ -86,4 +170,17 @@ export const SORT_KEYS = [
   { key: 'premiered-asc', display: 'Premiered Low to High' },
   { key: 'premiered-desc', display: 'Premiered High to Low' },
   { key: 'unrated', display: 'Unrated' }
+]
+
+export const GROUP_KEYS: { key: GroupKey; display: string }[] = [
+  { key: 'genres', display: 'Genres' },
+  { key: 'rating', display: 'Rating' },
+  { key: 'premiered-desc', display: 'Premiered Late to Early' },
+  { key: 'ended-desc', display: 'Ended Late to Early' },
+  { key: 'premiered-asc', display: 'Premiered Early to Late' },
+  { key: 'ended-asc', display: 'Ended Early to Late' },
+  { key: 'status', display: 'Status' },
+  { key: 'network', display: 'Network' },
+  { key: 'country', display: 'Country' },
+  { key: 'language', display: 'Language' }
 ]

@@ -7,3 +7,15 @@ export type SortKey =
   | 'premiered-asc'
   | 'premiered-desc'
   | 'unrated'
+
+export type GroupKey =
+  | 'genres'
+  | 'rating'
+  | 'premiered-asc'
+  | 'ended-asc'
+  | 'premiered-desc'
+  | 'ended-desc'
+  | 'status'
+  | 'language'
+  | 'network'
+  | 'country'
