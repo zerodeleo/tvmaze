@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.theme-dark {
+  --color-custom-100: 248, 248, 252;
+  --color-custom-200: 221, 221, 238;
+  --color-custom-300: 153, 153, 204;
+  --color-custom-400: 31, 31, 61;
+}
+
+.theme-light {
+  --color-custom-100: 31, 31, 61;
+  --color-custom-200: 153, 153, 204;
+  --color-custom-300: 221, 221, 238;
+  --color-custom-400: 248, 248, 252;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-playfair;
+}

@@ -1,21 +1,19 @@
+// router/index.js
+
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import MoviesView from '../views/MoviesView.vue'
+import MovieDetails from '../views/MovieDetails.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
+    { path: '/', redirect: '/movies' },
+    { path: '/movies', component: MoviesView },
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/movies',
-      name: 'movies',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/MoviesView.vue')
+      path: '/movies/:id',
+      component: MovieDetails,
+      name: 'movie-details',
+      props: true // Pass route params as props to MovieDetails
     }
   ]
 })
