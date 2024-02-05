@@ -28,42 +28,27 @@ import { type GroupKey, type SortKey } from '@/interface'
 
 const movies = ref<Movie[]>([])
 const page = ref(1)
-const moviesPerPage = ref(50)
-const currentPage = ref(1)
 const selectedGenre = ref('')
 const selectedRating = ref(0)
 const sortKey = ref<SortKey>('ratings-desc')
 const groupKey = ref<GroupKey>('genres')
 
 const genres = computed<string[]>(() =>
-  utils.getValuesByKey('genres', data.value)?.sort((a, b) => a.localeCompare(b))
+  utils.getValuesByKey(data.value ? data.value : null, 'genres')
 )
 const filteredByGenre = computed<Movie[]>(() =>
-  utils.filterByGenre(selectedGenre.value, movies.value)
+  utils.filterByGenre(movies.value, selectedGenre.value)
 )
 const filterByRating = computed<Movie[]>(() =>
   utils.filterByRating(selectedRating.value, filteredByGenre.value)
 )
 const sortMovies = computed<Movie[]>(() => utils.sortMovies(filterByRating.value, sortKey.value))
-const paginatedMovies = computed(() =>
-  utils.getPaginatedData(sortMovies.value, startIndex.value, endIndex.value)
-)
 const groupedMovies = computed(() => utils.group(sortMovies.value, groupKey.value))
-const startIndex = computed(() => utils.getStartIndex(currentPage.value, moviesPerPage.value))
-const endIndex = computed(() => utils.getEndIndex(startIndex.value, moviesPerPage.value))
-const totalPages = computed(() => utils.getTotalPages(sortMovies.value, moviesPerPage.value))
 
 const { isLoading, isError, data, error } = useQuery<Movie[]>({
   queryKey: ['movies', page],
   queryFn: () => getMovies(page.value)
 })
-
-const goToPage = (p: number) => {
-  currentPage.value = p
-  if (currentPage.value === totalPages.value) {
-    page.value += 1
-  }
-}
 
 watch(data, () => {
   if (data.value) {

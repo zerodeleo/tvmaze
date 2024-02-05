@@ -11,29 +11,27 @@ export const getPaginatedData = <T>(data: T[], startIndex: number, endIndex: num
 export const getTotalPages = <T>(arr: T[], itemsPerPage: number) =>
   Math.ceil(arr!.length / itemsPerPage)
 
-export const getValuesByKey = <T>(key: string, data: T[] | undefined): string[] => {
-  if (data) {
-    const values = data
-      .flatMap((d: any) => d[key])
-      .reduce<string[]>((cache, value) => {
-        if (cache.includes(value)) {
-          return cache
-        } else {
-          cache.push(value)
-          return cache
-        }
-      }, [])
-    return values
+export const getValuesByKey = <T>(arr: T[] | null, key: string): string[] => {
+  if (!arr) {
+    return []
   }
-  return []
+  const values = arr
+    .flatMap((d: any) => d[key])
+    .reduce<string[]>((cache: any, value: any) => {
+      if (!value) {
+        return []
+      }
+      if (cache.includes(value)) {
+        return cache
+      } else {
+        cache.push(value)
+        return cache
+      }
+    }, [])
+  return values
 }
 
-export const deepFilterAndSortData = <T, U>(arr: T[], arr2: U[], key: string, sortKey: string) =>
-  arr
-    .filter((arr3: any) => arr2.every((r) => arr3[key].includes(r)))
-    .sort((a: any, b: any) => a[sortKey].localeCompare(b[sortKey])) ?? []
-
-export const filterByGenre = (genre: string, arr: Movie[]) =>
+export const filterByGenre = (arr: Movie[], genre: string) =>
   genre ? arr.filter((item) => item.genres.includes(genre)) : arr
 
 export const filterByRating = (rating: number, arr: Movie[]) => {
@@ -77,7 +75,7 @@ export const sortMovies = (arr: Movie[], sortKey: SortKey) => {
   }
 }
 
-export const group = (arr: Movie[], groupKey: string) => {
+export const group = (arr: Movie[], groupKey: GroupKey) => {
   switch (groupKey) {
     case 'genres':
       return groupByGenre(arr)
@@ -94,32 +92,45 @@ export const group = (arr: Movie[], groupKey: string) => {
     case 'language':
       return groupByKey(arr, 'language').sort((a, b) => a[0].localeCompare(b[0]))
     case 'premiered-asc':
-      return groupByYear(arr)
+      return groupByYear(arr, 'premiered')
     case 'ended-asc':
-      return groupByYear(arr)
+      return groupByYear(arr, 'ended')
     case 'premiered-desc':
-      return groupByYear(arr).reverse()
+      return groupByYear(arr, 'premiered').reverse()
     case 'ended-desc':
-      return groupByYear(arr).reverse()
+      return groupByYear(arr, 'ended').reverse()
     default:
       return groupByGenre(arr)
   }
 }
 
-const groupByYear = (arr: Movie[]) => {
-  const cache = arr.reduce((cache: any, movie: Movie) => {
-    const key = movie['premiered']?.slice(0, -6)
-    if (!cache[key as keyof Movie]) {
-      cache[key as keyof Movie] = []
+export const groupByYear = (arr: Movie[], objKey: keyof Movie) => {
+  const cache: { [year: string]: Movie[] } = {}
+
+  arr.forEach((movie: Movie) => {
+    const key = movie[objKey]
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+      return
     }
-    cache[key as keyof Movie].push(movie)
-    return cache
-  }, {})
+
+    const year = movie[objKey]?.slice(0, 4)
+    if (!year) {
+      return
+    }
+
+    if (!cache[year]) {
+      cache[year] = []
+    }
+    cache[year].push(movie)
+  })
   return Object.entries(cache)
 }
 
 export const groupByGenre = (arr: Movie[]) => {
   const cache = arr.reduce((cache: any, movie) => {
+    if (!movie.genres) {
+      return cache
+    }
     movie.genres.forEach((genre) => {
       if (!cache[genre]) {
         cache[genre] = []
@@ -131,27 +142,39 @@ export const groupByGenre = (arr: Movie[]) => {
   return Object.entries(cache)
 }
 
-const getNestedValue = (obj: any, keys: string[]) => {
-  return keys.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : null), obj)
-}
-
 export const groupByDotNotationKey = <T>(arr: T[], objKey: string) => {
   const cache: { [key: string]: T[] } = {}
-  arr.forEach((movie: T) => {
-    const value = getNestedValue(movie, objKey.split('.'))
-    if (value !== null) {
-      if (!cache[value]) {
-        cache[value] = []
+  arr.forEach((item: T) => {
+    const value = getNestedValue(item, objKey.split('.'))
+    if (!value) {
+      return []
+    }
+    if (value) {
+      if (!cache[String(value)]) {
+        cache[String(value)] = []
       }
-      cache[value].push(movie)
+      cache[String(value)].push(item)
     }
   })
   return Object.entries(cache)
 }
 
+export const getNestedValue = <T>(obj: T, keys: string[]): any => {
+  if (keys.length === 0) {
+    return
+  }
+  return keys.reduce(
+    (acc: any, key: any) => (acc && acc[key] !== undefined ? acc[key] : undefined),
+    obj
+  )
+}
+
 export const groupByKey = (arr: Movie[], objKey: keyof Movie) => {
   const cache = arr.reduce((cache: any, movie: Movie) => {
     const key = movie[objKey]
+    if (!key) {
+      return cache
+    }
     if (!cache[key]) {
       cache[key] = []
     }
@@ -160,27 +183,3 @@ export const groupByKey = (arr: Movie[], objKey: keyof Movie) => {
   }, {})
   return Object.entries(cache)
 }
-
-export const SORT_KEYS: { key: SortKey; display: string }[] = [
-  { key: 'a-z', display: 'Alphabetical' },
-  { key: 'ratings-asc', display: 'Ratings Low to High' },
-  { key: 'ratings-desc', display: 'Ratings High to Low' },
-  { key: 'updated-asc', display: 'Updated Low to High' },
-  { key: 'updated-desc', display: 'Updated High to Low' },
-  { key: 'premiered-asc', display: 'Premiered Low to High' },
-  { key: 'premiered-desc', display: 'Premiered High to Low' },
-  { key: 'unrated', display: 'Unrated' }
-]
-
-export const GROUP_KEYS: { key: GroupKey; display: string }[] = [
-  { key: 'genres', display: 'Genres' },
-  { key: 'rating', display: 'Rating' },
-  { key: 'premiered-desc', display: 'Premiered Late to Early' },
-  { key: 'ended-desc', display: 'Ended Late to Early' },
-  { key: 'premiered-asc', display: 'Premiered Early to Late' },
-  { key: 'ended-asc', display: 'Ended Early to Late' },
-  { key: 'status', display: 'Status' },
-  { key: 'network', display: 'Network' },
-  { key: 'country', display: 'Country' },
-  { key: 'language', display: 'Language' }
-]

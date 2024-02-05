@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { type GroupKey } from '@/interface'
-import { GROUP_KEYS } from '@/utils'
+import { GROUP_KEYS } from '@/constants'
 import { inject, ref, type Ref } from 'vue'
 
 const groupKey = inject<Ref<GroupKey>>('groupKey', ref(GROUP_KEYS[0].key as GroupKey))

@@ -12,7 +12,7 @@ import type StarsListVue from './StarsList.vue';
 
 <script setup lang="ts">
 import { type SortKey } from '@/interface'
-import { SORT_KEYS } from '@/utils'
+import { SORT_KEYS } from '@/constants'
 import { inject, ref, type Ref } from 'vue'
 
 const sortKey = inject<Ref<SortKey>>('sortKey', ref(SORT_KEYS[0].key as SortKey))
