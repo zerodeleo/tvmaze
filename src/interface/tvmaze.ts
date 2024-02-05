@@ -87,3 +87,8 @@ export interface Previousepisode {
 export interface Nextepisode {
   href: string
 }
+
+export interface InfiniteResponse {
+  pageData: Movie[] | []
+  nextCursor: number | undefined
+}

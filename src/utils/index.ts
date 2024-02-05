@@ -93,12 +93,8 @@ export const group = (arr: Movie[], groupKey: GroupKey) => {
       return groupByKey(arr, 'language').sort((a, b) => a[0].localeCompare(b[0]))
     case 'premiered-asc':
       return groupByYear(arr, 'premiered')
-    case 'ended-asc':
-      return groupByYear(arr, 'ended')
     case 'premiered-desc':
       return groupByYear(arr, 'premiered').reverse()
-    case 'ended-desc':
-      return groupByYear(arr, 'ended').reverse()
     default:
       return groupByGenre(arr)
   }
@@ -182,4 +178,49 @@ export const groupByKey = (arr: Movie[], objKey: keyof Movie) => {
     return cache
   }, {})
   return Object.entries(cache)
+}
+
+export const getRandomNumber = (min: number, max: number) => {
+  if (min >= max) {
+    throw new Error('Min must be less than or equal to max')
+  }
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+export const numberExistsInArray = (arr: number[], number: number) => {
+  if (Array.isArray(arr)) {
+    return arr.includes(number)
+  }
+  console.error('First argument is not an array')
+  return 0
+}
+
+export const generateUniqueRandomNumber = (min: number, max: number): number => {
+  const arr = getStoredRandomNumbers()
+
+  let randomNumber
+  do {
+    randomNumber = getRandomNumber(min, max)
+  } while (numberExistsInArray(arr, randomNumber))
+
+  arr.push(randomNumber)
+  storeRandomNumbers(arr)
+
+  return randomNumber
+}
+
+const getStoredRandomNumbers = (): number[] => {
+  let arr: any[] | string = localStorage.getItem('random') || []
+  if (!Array.isArray(arr)) {
+    arr = JSON.parse(arr)
+  } else {
+    if (arr.find((item: any) => typeof item !== 'number')) {
+      console.warn('Not a numbers array, will return 0 as random number')
+      return []
+    }
+  }
+  return arr as number[]
+}
+
+export const storeRandomNumbers = (arr: number[]): void => {
+  localStorage.setItem('random', JSON.stringify(arr))
 }

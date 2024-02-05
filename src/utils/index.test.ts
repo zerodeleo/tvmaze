@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 import {
   groupByDotNotationKey,
@@ -8,7 +8,12 @@ import {
   groupByKey,
   groupByYear,
   filterByRating,
-  getValuesByKey
+  getValuesByKey,
+  generateUniqueRandomNumber,
+  getRandomNumber,
+  numberExistsInArray,
+  storeRandomNumbers,
+  generateUniqueRandomNumber
 } from './'
 import type { Movie } from '@/interface/tvmaze'
 
@@ -294,5 +299,63 @@ describe('getValuesByKey', () => {
     const key = 'gender'
     const result = getValuesByKey(data, key)
     expect(result).toEqual([])
+  })
+})
+
+describe('getRandomNumber', () => {
+  it('should return a random number within the specified range', () => {
+    const min = 1
+    const max = 10
+    const randomNumber = getRandomNumber(min, max)
+
+    expect(randomNumber).toBeGreaterThanOrEqual(min)
+    expect(randomNumber).toBeLessThanOrEqual(max)
+  })
+})
+
+describe('numberExistsInArray', () => {
+  it('should return true if number exists in the array', () => {
+    const arr = [1, 2, 3]
+    const number = 2
+
+    const result = numberExistsInArray(arr, number)
+
+    expect(result).toBe(true)
+  })
+
+  it('should return false if number does not exist in the array', () => {
+    const arr = [1, 2, 3]
+    const number = 4
+
+    const result = numberExistsInArray(arr, number)
+
+    expect(result).toBe(false)
+  })
+})
+
+describe('storeRandomNumbers', () => {
+  it('should store the array in localStorage', () => {
+    const arr = [1, 2, 3]
+
+    storeRandomNumbers(arr)
+
+    const storedArr = JSON.parse(localStorage.getItem('random') || '[]')
+    expect(storedArr).toEqual(arr)
+  })
+})
+
+describe('generateUniqueRandomNumber', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('should return a unique random number within the specified range', () => {
+    const min = 1
+    const max = 10
+
+    const randomNumber = generateUniqueRandomNumber(min, max)
+
+    const storedArr = JSON.parse(localStorage.getItem('random') || '[]')
+    expect(storedArr).toContain(randomNumber)
   })
 })

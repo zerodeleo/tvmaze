@@ -25,11 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { inject, ref, type Ref } from 'vue'
 import GenreList from '@/components/GenreList.vue'
 import RatingsList from '@/components/RatingsList.vue'
 import SortByList from '@/components/SortByList.vue'
-import GroupByList from './GroupByList.vue';
+import GroupByList from './GroupByList.vue'
 
 const controls = ref([
   { key: 'genres', display: 'Genres', isToggled: false },
