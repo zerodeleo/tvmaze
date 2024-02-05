@@ -1,10 +1,12 @@
 <template>
-  <div class="inline-block w-48 pb-2 md:pb-4 px-2 md:px-4">
-    <img
-      class="w-full h-auto mb-2 md:mb-2 transition-transform transform-gpu hover:scale-105"
-      :src="movie.image ? movie.image.medium : undefined"
-      :alt="`An image of the show ${movie.name}`"
-    />
+  <div class="inline-block w-48 pb-2 md:pb-4 px-2 md:px-4 cursor-pointer">
+    <router-link :to="{ name: 'MovieDetails', params: { id: movie.id }}">  
+      <img
+        class="w-full h-auto mb-2 md:mb-2 transition-transform transform-gpu hover:scale-105"
+        :src="movie.image ? movie.image.medium : undefined"
+        :alt="`An image of the show ${movie.name}`"
+      />
+    </router-link>
     <div class="flex justify-between mb-2 md:mb-2">
       <template
         v-for="index in Math.floor(movie.rating.average ? movie.rating.average : 0)"

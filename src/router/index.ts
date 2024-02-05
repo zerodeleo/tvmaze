@@ -10,10 +10,10 @@ const router = createRouter({
     { path: '/', redirect: '/movies' },
     { path: '/movies', component: MoviesView },
     {
-      path: '/movies/:id',
+      path: '/movie/:id',
+      name: 'MovieDetails',
       component: MovieDetails,
-      name: 'movie-details',
-      props: true // Pass route params as props to MovieDetails
+      props: true
     }
   ]
 })

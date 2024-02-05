@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { useInfiniteQuery, useQuery } from '@tanstack/vue-query'
-import { getInfiniteMovies, getMovieSearchQuery } from '@/api/tvmaze'
+import { getInfiniteMovies, getMovieBySearchQuery } from '@/api/tvmaze'
 import type { InfiniteResponse, Movie } from '@/interface/tvmaze'
 import { computed, onBeforeMount, onUnmounted, provide, ref, watch } from 'vue'
 import * as utils from '@/utils'
@@ -62,7 +62,7 @@ const {
 const { data: searchedData } = useQuery({
   queryKey: ['movies', searchQuery],
   //@ts-ignore
-  queryFn: ({ queryKey }) => getMovieSearchQuery({ searchQuery: queryKey[1]})
+  queryFn: ({ queryKey }) => getMovieBySearchQuery({ searchQuery: queryKey[1]})
 })
 
 watch(infiniteData, () => {

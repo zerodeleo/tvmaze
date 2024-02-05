@@ -21,7 +21,7 @@ export const getInfiniteMovies = async ({ pageParam = 1 }): Promise<InfiniteResp
   }
 }
 
-export const getMovieSearchQuery = async ({
+export const getMovieBySearchQuery = async ({
   searchQuery
 }: {
   searchQuery: string
@@ -31,6 +31,13 @@ export const getMovieSearchQuery = async ({
   }
   const response: AxiosResponse<Movie, Error> = await axios.get(
     `https://api.tvmaze.com/singlesearch/shows?q=${searchQuery}`
+  )
+  return response?.data || null
+}
+
+export const getMovieById = async ({ id }: { id: number }) => {
+  const response: AxiosResponse<Movie, Error> = await axios.get(
+    `https://api.tvmaze.com/shows/${id}`
   )
   return response?.data || null
 }
