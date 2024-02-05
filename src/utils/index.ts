@@ -31,6 +31,11 @@ export const getValuesByKey = <T>(arr: T[] | null, key: string): string[] => {
   return values
 }
 
+export const filterBySearchQuery = (arr: Movie[], searchQuery: string) =>
+  searchQuery
+    ? arr.filter((item) => item.name.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()))
+    : arr
+
 export const filterByGenre = (arr: Movie[], genre: string) =>
   genre ? arr.filter((item) => item.genres.includes(genre)) : arr
 

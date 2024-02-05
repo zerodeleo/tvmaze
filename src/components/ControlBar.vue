@@ -1,8 +1,6 @@
 <template>
   <section class="flex flex-col">
-    <article>
-      <input class="input" placeholder="Search Query" />
-    </article>
+    <SearchBar />
     <article class="flex">
       <div class="flex">
         <button
@@ -30,6 +28,7 @@ import GenreList from '@/components/GenreList.vue'
 import RatingsList from '@/components/RatingsList.vue'
 import SortByList from '@/components/SortByList.vue'
 import GroupByList from './GroupByList.vue'
+import SearchBar from './SearchBar.vue'
 
 const controls = ref([
   { key: 'genres', display: 'Genres', isToggled: false },
