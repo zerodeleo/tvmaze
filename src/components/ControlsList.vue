@@ -1,14 +1,13 @@
 <template>
   <ul class="flex flex-wrap flex-col items-end md:items-center md:flex-row w-full justify-end">
-    <li
-      class="max-w-max"
-      v-for="control in controls"
-      :key="control.key"
-    >
-    <button @click.stop
-        @click="handleToggle(control.key)" :class="control.isToggled ? 'btn-primary-active' : 'btn-primary'">
-      {{ control.display }}
-    </button>
+    <li class="max-w-max" v-for="control in controls" :key="control.key">
+      <button
+        @click.stop
+        @click="handleToggle(control.key)"
+        :class="control.isToggled ? 'btn-primary-active' : 'btn-primary'"
+      >
+        {{ control.display }}
+      </button>
     </li>
   </ul>
 </template>
@@ -31,11 +30,9 @@ const handleToggle = (key: string) => {
   }
   isMenuOpen.value = !control.isToggled
 
-  
   controls.value = controls.value.map((c) => ({
     ...c,
     isToggled: c.key === key ? !c.isToggled : false
   }))
 }
-
 </script>
