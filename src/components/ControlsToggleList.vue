@@ -1,5 +1,5 @@
 <template>
-  <ul :class="{'h-screen': isMenuOpen}" class="flex w-full items-start justify-center md:pt-20">
+  <ul :class="{ 'h-screen': isMenuOpen }" class="flex w-full items-start justify-center md:pt-20">
     <div class="flex flex-wrap" v-for="control in controls" :key="control.key + '-list'">
       <GenreControlsList v-if="control.isToggled && control.key === 'genres'" :genres="genres" />
       <RatingControlsList v-if="control.isToggled && control.key === 'ratings'" />

@@ -18,8 +18,8 @@
         <h1 class="h1-highlight md:px-4">{{ selectedRating }}</h1>
         <h4>stars or more</h4>
       </div>
-      <br/>
-      <button @click="handleResetFilters" class="underline">Reset</button>
+      <br />
+      <button @click.stop @click="handleResetFilters" class="underline">Reset</button>
     </li>
     <li v-else>
       <h3>You can filter the shows by genre or rating.</h3>
@@ -40,7 +40,9 @@ const selectedRating = inject('selectedRating', ref(0))
 const numberOfShows = inject('numberOfShows', ref(0))
 
 const handleResetFilters = () => {
-  selectedGenre.value = '';
-  selectedRating.value = 0;
+  selectedGenre.value = ''
+  selectedRating.value = 0
+  localStorage.setItem('selectedGenre', '')
+  localStorage.setItem('selectedRating', '')
 }
 </script>

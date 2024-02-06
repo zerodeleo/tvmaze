@@ -33,15 +33,23 @@ h1 {
 }
 
 h2 {
-  @apply text-base text-2xl;
+  @apply text-2xl;
 }
 
 h3 {
-  @apply text-base text-xl;
+  @apply text-xl;
 }
 
 h4 {
-  @apply text-base text-lg;
+  @apply text-lg;
+}
+
+h5 {
+  @apply text-sm md:text-lg;
+}
+
+h6 {
+  @apply text-xs md:text-base;
 }
 
 .scale {
@@ -77,5 +85,5 @@ h4 {
 }
 
 .input {
-  @apply placeholder:text-custom-400 placeholder:font-montserrat bg-custom-300 bg-opacity-50 w-full shadow-md rounded focus:ring-custom-400 focus:border-custom-400;
+  @apply placeholder:text-custom-400 placeholder:font-montserrat bg-custom-200 px-5 py-2 w-full shadow-md rounded focus:ring-custom-400 focus:border-custom-400;
 }

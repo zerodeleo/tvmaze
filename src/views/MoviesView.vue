@@ -4,7 +4,7 @@
       <ControlsMenu />
     </section>
     <section
-      class="flex justify-center items-center md:px-32 lg:px-44 md:my-28 flex-col text-center"
+      class="flex justify-center items-center py-24 md:px-32 lg:px-44 md:my-28 flex-col text-center"
     >
       <h1 :class="{ 'opacity-0': isMenuOpen }">
         Discover and explore your favorite shows effortlessly.
@@ -12,19 +12,31 @@
     </section>
   </header>
   <body v-if="infiniteData" @click="triggerFetch = true">
-    <div v-if="searchedMovie">
-      <p>Is this what you're looking for?</p>
-      <h1>{{ searchedMovie.name }}</h1>
-      <MovieItem :movie="searchedMovie" />
+    <div class="mb-10">
+      <SearchBar />
     </div>
-    <div v-if="groupedMovies.length !== 0">
+    <div v-if="searchedMovie">
+      <h2>Is this what you're looking for?</h2>
+      <h1 class="text-center my-6">{{ searchedMovie.name }}</h1>
+      <div class="mb-20 text-center">
+        <MovieItem :movie="searchedMovie" />
+      </div>
+      <h4 v-if="groupedMovies.length > 0">
+        Alternatively, here are other shows that match your search for "<span
+          class="text-custom-200"
+          >{{ searchQuery }}</span
+        >".
+      </h4>
+    </div>
+    <div class="pb-20" v-if="groupedMovies.length !== 0">
       <div v-for="(groupedMovie, index) in groupedMovies" :key="index">
         <h2 :class="{ 'opacity-0': isMenuOpen }" class="title">{{ groupedMovie[0] }}</h2>
-        <div class="flex overflow-x-scroll">
+        <div ref="scrollList" @scroll="checkScrollEnd" class="flex overflow-x-scroll">
           <MovieListHorisontal :movies="groupedMovie[1] as Movie[]" />
         </div>
       </div>
     </div>
+    <RefreshMoviesPrompt v-if="!isMenuOpen" />
   </body>
 </template>
 
@@ -39,6 +51,8 @@ import { CONTROLS } from '@/constants'
 import MovieListHorisontal from '@/components/MovieListHorisontal.vue'
 import MovieItem from '@/components/MovieItem.vue'
 import ControlsMenu from '@/components/ControlsMenu.vue'
+import RefreshMoviesPrompt from '@/components/RefreshMoviesPrompt.vue'
+import SearchBar from '@/components/SearchBar.vue'
 
 const movies = ref<Movie[]>([])
 const searchedMovie = ref<Movie>()
@@ -51,6 +65,7 @@ const searchQuery = ref('')
 const numberOfShows = ref(0)
 const controls = ref(CONTROLS)
 const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
+const scrollList = ref<HTMLElement | null>(null)
 
 const genres = computed<string[]>(() => utils.getValuesByKey(movies.value, 'genres'))
 const filterBySearchQuery = computed<Movie[]>(() =>
@@ -156,6 +171,21 @@ onBeforeMount(() => {
     }
   }
 })
+
+const checkScrollEnd = () => {
+  if (scrollList.value) {
+    const container = scrollList.value
+    // Check if the container has a scrollable content
+    if (container.scrollWidth > container.clientWidth) {
+      const isEndReached = container.scrollLeft + container.clientWidth >= container.scrollWidth
+
+      if (isEndReached) {
+        console.log('End of list reached')
+        // Perform actions when the end of the list is reached
+      }
+    }
+  }
+}
 
 provide('genres', genres)
 provide('selectedGenre', selectedGenre)
