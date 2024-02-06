@@ -4,7 +4,7 @@
       <h1 class="mb-8 h1-highlight">{{ movie.name }}</h1>
       <br />
       <div class="w-full flex justify-center">
-        <div class="flex justify-center w-48 h-64">
+        <div class="flex justify-center w-48 h-64 bg-blue-300">
           <img v-if="movie.image" class="w-full h-full object-cover" :src="movie.image.original" />
           <ImageFallback v-else :movieName="movie.name" />
         </div>

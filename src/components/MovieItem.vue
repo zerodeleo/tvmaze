@@ -1,10 +1,10 @@
 <template>
   <article class="inline-block w-32 md:w-48 lg:w-56 pb-2 md:pb-4 pr-2 md:pr-4 cursor-pointer">
     <router-link :to="{ name: 'MovieDetails', params: { id: movie.id } }">
-      <div class="h-68">
+      <div class="h-38 md:h-80 scale mb-4">
         <img
           v-if="movie.image"
-          class="w-full h-full mb-2 md:mb-2 scale object-cover"
+          class="w-full h-full mb-2 md:mb-2 object-cover"
           :src="movie.image.medium"
           :alt="`An image of the show ${movie.name}`"
         />
