@@ -177,7 +177,7 @@ const checkScrollEnd = (index: number) => {
     const container = scrollList.value[index]
     if (container.scrollWidth > container.clientWidth) {
       const isEndReached = container.scrollLeft + container.clientWidth >= container.scrollWidth
-      if (isEndReached && !isFetching) {
+      if (isEndReached) {
         fetchNextPage()
       }
     }
