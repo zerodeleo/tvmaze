@@ -11,7 +11,7 @@ export const getMovies = async (page = 1): Promise<Movie[]> => {
 export const getInfiniteMovies = async ({ pageParam = 1 }): Promise<InfiniteResponse> => {
   const randomNumber = generateUniqueRandomNumber(1, 300)
   const isTouchScreen = window.matchMedia('(pointer: coarse)').matches
-  const fetchMaxPages = isTouchScreen ? 1 : 5
+  const fetchMaxPages = isTouchScreen ? 1 : 200
   const response: AxiosResponse<Movie[], Error> = await axios.get(
     `https://api.tvmaze.com/shows?page=${randomNumber}`
   )

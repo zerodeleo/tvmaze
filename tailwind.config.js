@@ -6,7 +6,8 @@ export default {
     extend: {
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
-        playfair: ['Playfair Display', 'serif']
+        playfair: ['Playfair Display', 'serif'],
+        protest: ['Protest Strike', 'serif']
       },
       boxShadow: {
         primary: '#422800 4px 4px 0 0',

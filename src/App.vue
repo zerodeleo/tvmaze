@@ -4,7 +4,9 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
 </script>
 
 <template>
-  <main class="bg-custom-400 text-custom-100 theme-light font-montserrat">
+  <main
+    class="bg-custom-400 text-custom-100 theme-dark font-montserrat min-h-screen flex flex-col px-8 md:px-12 lg:px-12"
+  >
     <RouterView />
     <VueQueryDevtools />
   </main>

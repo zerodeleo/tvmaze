@@ -1,4 +1,4 @@
-import type { GroupKey, SortKey } from '@/interface'
+import type { Control, GroupKey, SortKey } from '@/interface'
 
 export const SORT_KEYS: { key: SortKey; display: string }[] = [
   { key: 'a-z', display: 'Alphabetical' },
@@ -14,10 +14,17 @@ export const SORT_KEYS: { key: SortKey; display: string }[] = [
 export const GROUP_KEYS: { key: GroupKey; display: string }[] = [
   { key: 'genres', display: 'Genres' },
   { key: 'rating', display: 'Rating' },
-  { key: 'premiered-desc', display: 'Premiered Late to Early' },
-  { key: 'premiered-asc', display: 'Premiered Early to Late' },
+  { key: 'premiered-desc', display: 'Premiered Desc' },
+  { key: 'premiered-asc', display: 'Premiered Asc' },
   { key: 'status', display: 'Status' },
   { key: 'network', display: 'Network' },
   { key: 'country', display: 'Country' },
   { key: 'language', display: 'Language' }
+]
+
+export const CONTROLS: Control[] = [
+  { key: 'genres', display: 'Genres', isToggled: false },
+  { key: 'ratings', display: 'Ratings', isToggled: false },
+  { key: 'sortBy', display: 'Sort By', isToggled: false },
+  { key: 'groupBy', display: 'Group By', isToggled: true }
 ]
