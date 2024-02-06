@@ -1,0 +1,7 @@
+# Redirects for Vue Router
+
+# Redirect from the root to the /movies route
+/    /movies    200
+
+# Redirect from /movie/:id to the corresponding MovieDetails route
+/movie/:id    /movie/:id    200
