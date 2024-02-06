@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import GenreItem from './GenreItem.vue'
+import GenreItem from '@components/GenreItem.vue'
 
 const { genres } = defineProps<{ genres: string[] }>()
 </script>

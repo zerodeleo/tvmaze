@@ -8,16 +8,16 @@
 </template>
 
 <script setup lang="ts">
-import { getMovieById } from '@/api/tvmaze';
-import type { Movie } from '@/interface/tvmaze';
-import { useQuery } from '@tanstack/vue-query';
-import { ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { getMovieById } from '@/api/tvmaze'
+import type { Movie } from '@/interface/tvmaze'
+import { useQuery } from '@tanstack/vue-query'
+import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const id = router.currentRoute.value.params.id
 
-const movie = ref<Movie>();
+const movie = ref<Movie>()
 
 const { data } = useQuery({
   queryKey: ['movies', id],
@@ -26,9 +26,8 @@ const { data } = useQuery({
 })
 
 watch(data, () => {
-  if(data.value) {
-    movie.value = data.value;
+  if (data.value) {
+    movie.value = data.value
   }
 })
-
 </script>

@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import type { Movie } from '@/interface/tvmaze'
-import MovieItem from './MovieItem.vue'
+import MovieItem from './MovieItem.vue';
 
 const { movies } = defineProps<{ movies: Movie[] }>()
 </script>

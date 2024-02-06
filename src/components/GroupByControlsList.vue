@@ -1,12 +1,12 @@
 <template>
-  <button
+  <li
     @click="handleSelectGroup(groupKeyObj.key as GroupKey)"
     :class="groupKey === groupKeyObj.key ? 'btn' : 'btn-invert'"
     v-for="groupKeyObj in GROUP_KEYS"
     :key="groupKeyObj.key"
   >
     {{ groupKeyObj.display }}
-  </button>
+  </li>
 </template>
 
 <script setup lang="ts">

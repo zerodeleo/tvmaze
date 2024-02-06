@@ -17,3 +17,9 @@ export type GroupKey =
   | 'language'
   | 'network'
   | 'country'
+
+export interface Control {
+  key: string
+  display: string
+  isToggled: boolean
+}

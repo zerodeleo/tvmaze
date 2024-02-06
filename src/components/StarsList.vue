@@ -1,12 +1,12 @@
 <template>
-  <div class="flex justify-between">
+  <li class="flex justify-between">
     <template v-for="star in stars" :key="star">
       <StarIconOutline
         @click="handleSelectRating(star)"
         class="w-1/10 stroke-custom-200 hover:fill-custom-200 cursor-pointer"
       />
     </template>
-  </div>
+  </li>
 </template>
 
 <script setup lang="ts">

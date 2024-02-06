@@ -1,13 +1,13 @@
 import type StarsListVue from './StarsList.vue';
 <template>
-  <button
+  <li
     @click="handleSelectSort(sortKeyObj.key as SortKey)"
     :class="sortKey === sortKeyObj.key ? 'btn' : 'btn-invert'"
     v-for="sortKeyObj in SORT_KEYS"
     :key="sortKeyObj.key"
   >
     {{ sortKeyObj.display }}
-  </button>
+  </li>
 </template>
 
 <script setup lang="ts">

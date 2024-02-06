@@ -1,7 +1,7 @@
 <template>
-  <button @click="handleSelectGenre(genre)" :class="selectedGenre === genre ? 'btn' : 'btn-invert'">
+  <li @click="handleSelectGenre(genre)" :class="selectedGenre === genre ? 'btn' : 'btn-invert'">
     {{ genre }}
-  </button>
+  </li>
 </template>
 
 <script setup lang="ts">

@@ -1,12 +1,13 @@
+@import 'reset.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .theme-dark {
-  --color-custom-100: 248, 248, 252;
-  --color-custom-200: 221, 221, 238;
-  --color-custom-300: 153, 153, 204;
-  --color-custom-400: 31, 31, 61;
+  --color-custom-100: 244, 244, 244;
+  --color-custom-200: 182, 100, 182;
+  --color-custom-300: 142, 20, 142;
+  --color-custom-400: 42, 10, 42;
 }
 
 .theme-light {
@@ -22,21 +23,37 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-playfair;
+  @apply font-protest tracking-widest;
+}
+
+h1 {
+  @apply text-2xl md:text-4xl lg:text-6xl text-custom-300 px-4 py-16;
+}
+
+h2 {
+  @apply text-4xl md:text-4xl lg:text-6xl;
+}
+
+h3 {
+  @apply text-2xl;
+}
+
+h4 {
+  @apply text-xl;
 }
 
 .common {
-  @apply text-custom-100 items-center rounded-lg cursor-pointer text-base justify-center leading-4 py-2 px-3 mr-2 mb-2 text-left select-none whitespace-pre break-normal;
+  @apply font-montserrat text-left;
 }
 
 .btn {
-  @apply common shadow-primary bg-custom-200 hover:bg-custom-200;
+  @apply common shadow-md bg-custom-100 rounded-full bg-opacity-50 text-custom-400 my-1 px-2;
 }
 
 .btn-invert {
-  @apply common shadow-secondary bg-custom-400 hover:bg-custom-200 hover:shadow-primary text-opacity-50 hover:text-opacity-100;
+  @apply common text-opacity-50 my-1 px-2;
 }
 
 .input {
-  @apply w-full shadow-secondary rounded py-2 px-3 mr-2 mb-2 focus:ring-custom-400 focus:border-custom-400;
+  @apply placeholder:text-custom-400 placeholder:font-montserrat bg-custom-300 bg-opacity-50 w-full shadow-md rounded focus:ring-custom-400 focus:border-custom-400;
 }
