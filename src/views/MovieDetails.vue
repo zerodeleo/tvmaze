@@ -1,10 +1,13 @@
 <template>
-  <section v-if="movie" class="flex flex-col items-center text-center h-screen">
+  <section v-if="movie" class="flex flex-col items-center text-center h-max-content">
     <div class="max-w-screen-md px-4 py-8">
       <h1 class="mb-8 h1-highlight">{{ movie.name }}</h1>
       <br />
-      <div class="flex justify-center">
-        <img class="rounded" :src="movie.image ? movie.image.medium : undefined" />
+      <div class="w-full flex justify-center">
+        <div class="flex justify-center w-48 h-64">
+          <img v-if="movie.image" class="w-full h-full object-cover" :src="movie.image.original" />
+          <ImageFallback v-else :movieName="movie.name" />
+        </div>
       </div>
       <div class="flex flex-wrap mt-8">
         <h1 class="pr-2" v-for="genre in movie.genres" :key="genre">{{ genre }}</h1>
@@ -25,7 +28,7 @@
 
 <script setup lang="ts">
 import { getMovieById } from '@/api/tvmaze'
-import MovieItem from '@/components/MovieItem.vue'
+import ImageFallback from '@/components/ImageFallback.vue'
 import type { Movie } from '@/interface/tvmaze'
 import { useQuery } from '@tanstack/vue-query'
 import { computed, ref, watch } from 'vue'
@@ -36,8 +39,8 @@ const id = router.currentRoute.value.params.id
 
 const movie = ref<Movie>()
 const summary = computed(() => {
-  if (movie.value) {
-    return movie.value.summary.replace('<p>', '').replace('</p>', '')
+  if (movie.value && movie.value.summary) {
+    return movie.value.summary.replace(/<[^>]*>/gi, '')
   }
   return ''
 })

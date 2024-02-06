@@ -31,7 +31,7 @@
     <div class="pb-20" v-if="groupedMovies.length !== 0">
       <div v-for="(groupedMovie, index) in groupedMovies" :key="index">
         <h2 :class="{ 'opacity-0': isMenuOpen }" class="title">{{ groupedMovie[0] }}</h2>
-        <div ref="scrollList" @scroll="checkScrollEnd" class="flex overflow-x-scroll">
+        <div ref="scrollList" @scroll="() => checkScrollEnd(index)" class="flex overflow-x-scroll">
           <MovieListHorisontal :movies="groupedMovie[1] as Movie[]" />
         </div>
       </div>
@@ -65,7 +65,7 @@ const searchQuery = ref('')
 const numberOfShows = ref(0)
 const controls = ref(CONTROLS)
 const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
-const scrollList = ref<HTMLElement | null>(null)
+const scrollList = ref<HTMLElement[] | null>(null)
 
 const genres = computed<string[]>(() => utils.getValuesByKey(movies.value, 'genres'))
 const filterBySearchQuery = computed<Movie[]>(() =>
@@ -172,16 +172,13 @@ onBeforeMount(() => {
   }
 })
 
-const checkScrollEnd = () => {
+const checkScrollEnd = (index: number) => {
   if (scrollList.value) {
-    const container = scrollList.value
-    // Check if the container has a scrollable content
+    const container = scrollList.value[index]
     if (container.scrollWidth > container.clientWidth) {
       const isEndReached = container.scrollLeft + container.clientWidth >= container.scrollWidth
-
-      if (isEndReached) {
-        console.log('End of list reached')
-        // Perform actions when the end of the list is reached
+      if (isEndReached && !isFetching) {
+        fetchNextPage()
       }
     }
   }
