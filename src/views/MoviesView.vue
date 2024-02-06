@@ -1,33 +1,27 @@
 <template>
-  <header class="flex justify-center items-center md:px-32 lg:px-44 md:my-28 flex-col text-center">
-    <h1>Discover and explore your favorite shows effortlessly.</h1>
-    <h4>
-      Currently browsing through
-      <span class="text-custom-200 text-4xl">{{ numberOfShows }}</span> shows
-    </h4>
-    <p>Don't find anything you like?</p>
-    <button
-      @click="handleTriggerFetchByUser"
-      class="font-protest text-xl tracking-widest my-8 bg-custom-100 bg-opacity-50 rounded-full py-2 px-10"
+  <header>
+    <section :class="{ 'h-screen': isMenuOpen }" class="fixed w-full left-0 px-8 z-10">
+      <ControlsMenu />
+    </section>
+    <section
+      class="flex justify-center items-center md:px-32 lg:px-44 md:my-28 flex-col text-center"
     >
-      Click Here!
-    </button>
-    <p>Or refresh the page and you'll get new random shows to browse through</p>
+      <h1 :class="{ 'opacity-0': isMenuOpen }">
+        Discover and explore your favorite shows effortlessly.
+      </h1>
+    </section>
   </header>
   <body v-if="infiniteData" @click="triggerFetch = true">
-    <div>
-      <ControlsBar />
-      <div v-if="searchedMovie">
-        <p>Is this what you're looking for?</p>
-        <h1>{{ searchedMovie.name }}</h1>
-        <MovieItem :movie="searchedMovie" />
-      </div>
-      <div v-if="groupedMovies.length !== 0">
-        <div v-for="(groupedMovie, index) in groupedMovies" :key="index">
-          <h2 class="title">{{ groupedMovie[0] }}</h2>
-          <div class="flex overflow-x-scroll">
-            <MovieListHorisontal :movies="groupedMovie[1] as Movie[]" />
-          </div>
+    <div v-if="searchedMovie">
+      <p>Is this what you're looking for?</p>
+      <h1>{{ searchedMovie.name }}</h1>
+      <MovieItem :movie="searchedMovie" />
+    </div>
+    <div v-if="groupedMovies.length !== 0">
+      <div v-for="(groupedMovie, index) in groupedMovies" :key="index">
+        <h2 :class="{ 'opacity-0': isMenuOpen }" class="title">{{ groupedMovie[0] }}</h2>
+        <div class="flex overflow-x-scroll">
+          <MovieListHorisontal :movies="groupedMovie[1] as Movie[]" />
         </div>
       </div>
     </div>
@@ -44,18 +38,19 @@ import { type GroupKey, type SortKey } from '@/interface'
 import { CONTROLS } from '@/constants'
 import MovieListHorisontal from '@/components/MovieListHorisontal.vue'
 import MovieItem from '@/components/MovieItem.vue'
-import ControlsBar from '@/components/ControlsBar.vue'
+import ControlsMenu from '@/components/ControlsMenu.vue'
 
 const movies = ref<Movie[]>([])
 const searchedMovie = ref<Movie>()
-const selectedGenre = ref('')
-const selectedRating = ref(0)
-const sortKey = ref<SortKey>('ratings-desc')
-const groupKey = ref<GroupKey>('genres')
+const selectedGenre = ref(localStorage.getItem('selectedGenre') || '')
+const selectedRating = ref(localStorage.getItem('selectedRating') || '')
+const sortKey = ref<SortKey>((localStorage.getItem('sortKey') as SortKey) || 'ratings-desc')
+const groupKey = ref<GroupKey>((localStorage.getItem('groupKey') as GroupKey) || 'genres')
 const triggerFetch = ref(false)
 const searchQuery = ref('')
 const numberOfShows = ref(0)
 const controls = ref(CONTROLS)
+const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
 
 const genres = computed<string[]>(() => utils.getValuesByKey(movies.value, 'genres'))
 const filterBySearchQuery = computed<Movie[]>(() =>
@@ -65,7 +60,7 @@ const filteredByGenre = computed<Movie[]>(() =>
   utils.filterByGenre(filterBySearchQuery.value, selectedGenre.value)
 )
 const filterByRating = computed<Movie[]>(() =>
-  utils.filterByRating(selectedRating.value, filteredByGenre.value)
+  utils.filterByRating(filteredByGenre.value, selectedRating.value)
 )
 const sortMovies = computed<Movie[]>(() => utils.sortMovies(filterByRating.value, sortKey.value))
 const groupedMovies = computed(() => utils.group(sortMovies.value, groupKey.value))
@@ -112,10 +107,44 @@ watch(searchedData, () => {
   }
 })
 
+watch(movies, () => {
+  if (filterByRating.value.length === 0 && !isFetching) {
+    fetchNextPage()
+  }
+})
+
 watch(searchQuery, () => {
   if (searchQuery.value === '') {
     searchedMovie.value = undefined
   }
+})
+
+watch(selectedGenre, () => {
+  if (selectedGenre.value) {
+    localStorage.setItem('selectedGenre', selectedGenre.value)
+  }
+})
+
+watch(selectedRating, () => {
+  if (selectedRating.value) {
+    localStorage.setItem('selectedRating', JSON.stringify(selectedRating.value))
+  }
+})
+
+watch(sortKey, () => {
+  if (sortKey.value) {
+    localStorage.setItem('sortKey', JSON.stringify(sortKey.value))
+  }
+})
+
+watch(groupKey, () => {
+  if (groupKey.value) {
+    localStorage.setItem('groupKey', JSON.stringify(groupKey.value))
+  }
+})
+
+watch(isMenuOpen, () => {
+  localStorage.setItem('isMenuOpen', isMenuOpen.value ? JSON.stringify(isMenuOpen.value) : '')
 })
 
 onBeforeMount(() => {
@@ -128,10 +157,6 @@ onBeforeMount(() => {
   }
 })
 
-const handleTriggerFetchByUser = () => {
-  triggerFetch.value = true
-}
-
 provide('genres', genres)
 provide('selectedGenre', selectedGenre)
 provide('selectedRating', selectedRating)
@@ -140,4 +165,8 @@ provide('groupKey', groupKey)
 provide('triggerFetch', triggerFetch)
 provide('searchQuery', searchQuery)
 provide('controls', controls)
+provide('isMenuOpen', isMenuOpen)
+provide('numberOfShows', numberOfShows)
+provide('triggerFetch', triggerFetch)
+provide('isMenuOpen', isMenuOpen)
 </script>

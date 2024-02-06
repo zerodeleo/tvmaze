@@ -39,13 +39,13 @@ export const filterBySearchQuery = (arr: Movie[], searchQuery: string) =>
 export const filterByGenre = (arr: Movie[], genre: string) =>
   genre ? arr.filter((item) => item.genres.includes(genre)) : arr
 
-export const filterByRating = (rating: number, arr: Movie[]) => {
+export const filterByRating = (arr: Movie[], rating: string) => {
   if (!rating) {
     return arr
   }
-  const ratingFloor = Math.floor(rating)
+  const ratingFloor = Math.floor(+rating)
   return arr.filter(
-    (item) => Math.floor(item.rating.average ? item.rating.average : 0) === ratingFloor
+    (item) => Math.floor(item.rating.average ? item.rating.average : 0) >= ratingFloor
   )
 }
 

@@ -1,11 +1,9 @@
 <template>
-  <article class="mb-10">
-    <input class="input" placeholder="Search Query" v-model="searchQuery" />
-  </article>
+  <input class="input" placeholder="Search Query" v-model="searchQuery" />
 </template>
 
 <script setup lang="ts">
-import { inject, ref, type Ref } from 'vue'
+import { inject, ref } from 'vue'
 
-const searchQuery = inject<Ref<string>>('searchQuery', ref(''))
+const searchQuery = inject('searchQuery', ref(''))
 </script>

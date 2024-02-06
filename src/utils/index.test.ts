@@ -252,23 +252,21 @@ describe('filterByRating', () => {
     { id: 5, title: 'Movie 5', rating: { average: 6.5 } }
   ]
 
-  it('should return movies with the specified rating', () => {
+  it('should return movies equal to and higher than the specified rating', () => {
     const rating = 7
-    const filteredMovies = filterByRating(rating, movies)
-    const expectedMovies = movies.filter(
-      (movie) => Math.floor(movie.rating.average || 0) === rating
-    )
+    const filteredMovies = filterByRating(movies, rating)
+    const expectedMovies = movies.filter((movie) => Math.floor(movie.rating.average || 0) >= rating)
     expect(filteredMovies).toEqual(expectedMovies)
   })
 
   it('should return all movies if rating is not provided', () => {
-    const filteredMovies = filterByRating(0, movies)
+    const filteredMovies = filterByRating(movies, 0)
     expect(filteredMovies).toEqual(movies)
   })
 
   it('should return empty array if no movies match the rating', () => {
     const rating = 9
-    const filteredMovies = filterByRating(rating, movies)
+    const filteredMovies = filterByRating(movies, rating)
     expect(filteredMovies).toEqual([])
   })
 })

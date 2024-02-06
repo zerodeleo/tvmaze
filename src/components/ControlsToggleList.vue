@@ -1,14 +1,11 @@
 <template>
-  <ul class="flex w-full">
-    <div
-      class="flex flex-wrap text-sm md:text-lg"
-      v-for="control in controls"
-      :key="control.key + '-list'"
-    >
+  <ul :class="{'h-screen': isMenuOpen}" class="flex w-full items-start justify-center md:pt-20">
+    <div class="flex flex-wrap" v-for="control in controls" :key="control.key + '-list'">
       <GenreControlsList v-if="control.isToggled && control.key === 'genres'" :genres="genres" />
       <RatingControlsList v-if="control.isToggled && control.key === 'ratings'" />
       <SortByControlsList v-if="control.isToggled && control.key === 'sortBy'" />
       <GroupByControlsList v-if="control.isToggled && control.key === 'groupBy'" />
+      <OptionsList v-if="control.isToggled && control.key === 'options'" />
     </div>
   </ul>
 </template>
@@ -20,7 +17,9 @@ import RatingControlsList from '@/components/RatingControlsList.vue'
 import SortByControlsList from '@/components/SortByControlsList.vue'
 import GroupByControlsList from '@/components/GroupByControlsList.vue'
 import { CONTROLS } from '@/constants'
+import OptionsList from './OptionsList.vue'
 
-const controls = ref(CONTROLS)
-const genres = inject<string[]>('genres', [])
+const controls = inject('controls', ref(CONTROLS))
+const genres = inject('genres', [])
+const isMenuOpen = inject('isMenuOpen', false)
 </script>

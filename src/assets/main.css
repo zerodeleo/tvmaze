@@ -17,41 +17,63 @@
   --color-custom-400: 248, 248, 252;
 }
 
-h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  @apply font-protest tracking-widest;
+  @apply font-montserrat tracking-widest md:font-protest;
+}
+h1 {
+  @apply tracking-widest font-protest text-custom-300 text-3xl;
 }
 
-h1 {
-  @apply text-2xl md:text-4xl lg:text-6xl text-custom-300 px-4 py-16;
+.h1-highlight {
+  @apply tracking-widest font-protest text-custom-200 text-4xl underline;
 }
 
 h2 {
-  @apply text-4xl md:text-4xl lg:text-6xl;
+  @apply text-base text-2xl;
 }
 
 h3 {
-  @apply text-2xl;
+  @apply text-base text-xl;
 }
 
 h4 {
-  @apply text-xl;
+  @apply text-base text-lg;
 }
 
-.common {
-  @apply font-montserrat text-left;
+.scale {
+  @apply transition-transform transform-gpu hover:scale-105;
 }
 
 .btn {
-  @apply common shadow-md bg-custom-100 rounded-full bg-opacity-50 text-custom-400 my-1 px-2;
+  @apply hover:text-custom-200 cursor-pointer scale;
 }
 
-.btn-invert {
-  @apply common text-opacity-50 my-1 px-2;
+.btn-primary-common {
+  @apply btn font-montserrat text-left pl-8 mb-2 md:mb-6 text-2xl md:text-lg;
+}
+
+.btn-primary-active {
+  @apply btn-primary-common underline;
+}
+
+.btn-primary {
+  @apply btn-primary-common text-custom-100 text-opacity-60;
+}
+
+.btn-secondary-common {
+  @apply btn font-montserrat text-base md:text-lg mr-6 mb-6 md:mr-8 md:mb-4;
+}
+
+.btn-secondary {
+  @apply btn-secondary-common text-custom-100 text-opacity-50;
+}
+
+.btn-secondary-active {
+  @apply btn-secondary-common underline;
 }
 
 .input {

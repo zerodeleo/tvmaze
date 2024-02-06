@@ -3,8 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import GenreControlsItem from './GenreControlsItem.vue';
-
+import GenreControlsItem from './GenreControlsItem.vue'
 
 const { genres } = defineProps<{ genres: string[] }>()
 </script>
