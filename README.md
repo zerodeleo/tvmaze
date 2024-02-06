@@ -2,6 +2,8 @@
 
 ![TVMaze Frontend Application](https://raw.githubusercontent.com/zerodeleo/tvmaze/main/src/assets/release_01.png)
 
+[Click here] to view the deployed site (https://bejewelled-smakager-9beffd.netlify.app/movies)
+
 ## Introduction
 
 The TVMaze Frontend Application retrieves data from the TVMaze API to present lists of TV shows categorized by various genres and ratings. Each reload is randomized while still maintaining user history. Users can also organize their viewing experience using sorting and grouping options. Additionally, the application facilitates searching for specific show titles and accessing detailed information on a separate screen.
@@ -87,6 +89,10 @@ The main components of the application include:
 ## Testing
 
 Unit tests are included to ensure the reliability and functionality of critical components. Run `npm run test:unit` to execute the tests.
+
+## Deployment
+
+Continous deployment on Netlify
 
 ## Further Implementation
 
