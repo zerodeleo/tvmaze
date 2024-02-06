@@ -9,7 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import SearchBar from '@components/SearchBar.vue'
-import ControlsList from '@components/ControlsList.vue'
-import ControlsToggleList from '@components/ControlsToggleList.vue'
+import ControlsList from './ControlsList.vue';
+import ControlsToggleList from './ControlsToggleList.vue';
+import SearchBar from './SearchBar.vue';
+
 </script>
