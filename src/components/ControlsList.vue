@@ -4,11 +4,11 @@
       class="max-w-max"
       v-for="control in controls"
       :key="control.key"
-      @click.stop
-      @click="handleToggle(control.key)"
-      :class="control.isToggled ? 'btn-primary-active' : 'btn-primary'"
     >
+    <button @click.stop
+        @click="handleToggle(control.key)" :class="control.isToggled ? 'btn-primary-active' : 'btn-primary'">
       {{ control.display }}
+    </button>
     </li>
   </ul>
 </template>
@@ -21,14 +21,21 @@ const controls = inject('controls', ref(CONTROLS))
 const isMenuOpen = inject('isMenuOpen', ref(false))
 
 const handleToggle = (key: string) => {
-  if (!controls.value.find((control) => control.key === key)!.isToggled) {
-    isMenuOpen.value = true
-  } else {
-    isMenuOpen.value = false
+  if (!controls.value) {
+    return
   }
-  controls.value = controls.value.map((control) => ({
-    ...control,
-    isToggled: control.key === key ? !control.isToggled : false
+
+  const control = controls.value.find((control) => control.key === key)
+  if (!control) {
+    return
+  }
+  isMenuOpen.value = !control.isToggled
+
+  
+  controls.value = controls.value.map((c) => ({
+    ...c,
+    isToggled: c.key === key ? !c.isToggled : false
   }))
 }
+
 </script>
