@@ -1,6 +1,6 @@
 # TVMaze Frontend Application Documentation
 
-![TVMaze Frontend Application](assets/release_01.png)
+![TVMaze Frontend Application](https://raw.githubusercontent.com/zerodeleo/tvmaze/main/src/assets/release_01.png)
 
 ## Introduction
 
