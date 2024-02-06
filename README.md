@@ -2,7 +2,7 @@
 
 ![TVMaze Frontend Application](https://raw.githubusercontent.com/zerodeleo/tvmaze/main/src/assets/release_01.png)
 
-[Click here](https://bejewelled-smakager-9beffd.netlify.app/movies) to view the deployed application
+[Click here](https://bejewelled-smakager-9beffd.netlify.app/) to view the deployed application
 
 ## Introduction
 
