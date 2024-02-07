@@ -1,18 +1,20 @@
 <template>
   <HeaderComponent />
-  <body v-if="infiniteData" @click="triggerFetch = true">
+  <body @click="triggerFetch = true">
     <div class="mb-10">
       <SearchBar />
     </div>
-    <div v-if="searchedMovie">
-      <SearchedMovies
-        :searchedMovie="searchedMovie"
-        :groupedMoviesArraylength="groupedMovies.length"
-      />
-    </div>
-    <div class="pb-20" v-if="groupedMovies.length !== 0">
-      <GroupedMovies :groupedMovies="groupedMovies" />
-    </div>
+    <ErrorIndicator v-if="isErrorInfiniteData || isErrorSearchQueryData" />
+    <LoadingIndicator v-if="isLoadingSearchQueryData || isLoadingInfiniteData"/>
+      <div v-if="searchedMovie">
+        <SearchedMovies
+          :searchedMovie="searchedMovie"
+          :groupedMoviesArraylength="groupedMovies.length"
+        />
+      </div>
+      <div class="pb-20" v-if="groupedMovies.length !== 0">
+        <GroupedMovies :groupedMovies="groupedMovies" />
+      </div>
     <RefreshMoviesPrompt v-if="!isMenuOpen" />
   </body>
 </template>
@@ -33,6 +35,8 @@ import SearchBar from '@/components/SearchBar.vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import SearchedMovies from '@/components/SearchedMovies.vue'
 import GroupedMovies from '@/components/GroupedMovies.vue'
+import LoadingIndicator from '@/components/LoadingIndicator.vue'
+import ErrorIndicator from '@/components/ErrorIndicator.vue'
 
 const movies = ref<Movie[]>([])
 const searchedMovie = ref<Movie>()
@@ -57,13 +61,16 @@ const filterByRating = computed<Movie[]>(() =>
   utils.filterByRating(filteredByGenre.value, selectedRating.value)
 )
 const sortMovies = computed<Movie[]>(() => utils.sortMovies(filterByRating.value, sortKey.value))
-const groupedMovies = computed<[string, Movie[]][]>(() => utils.group(sortMovies.value, groupKey.value))
+const groupedMovies = computed<[string, Movie[]][]>(() =>
+  utils.group(sortMovies.value, groupKey.value)
+)
 
 const {
   data: infiniteData,
   fetchNextPage,
   isFetching,
-  isLoading: isLoadingInfiniteData
+  isLoading: isLoadingInfiniteData,
+  isError: isErrorInfiniteData
 } = useInfiniteQuery<InfiniteResponse, Error>({
   queryKey: ['movies'],
   //@ts-ignore
@@ -71,7 +78,11 @@ const {
   getNextPageParam: (lastPage: InfiniteResponse) => lastPage.nextCursor
 })
 
-const { data: searchedData, isLoading: isLoadingSearchQueryData } = useQuery({
+const {
+  data: searchedData,
+  isLoading: isLoadingSearchQueryData,
+  isError: isErrorSearchQueryData
+} = useQuery({
   queryKey: ['movies', searchQuery],
   //@ts-ignore
   queryFn: ({ queryKey }) => getMovieBySearchQuery({ searchQuery: queryKey[1] })
