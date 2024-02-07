@@ -18,7 +18,7 @@ import { inject, ref } from 'vue'
 import ControlsMenu from './ControlsMenu.vue'
 import useLocalStorage from '@/hooks/useLocalStorage.vue'
 
-useLocalStorage();
+useLocalStorage()
 
 const isMenuOpen = inject('isMenuOpen', ref(false))
 </script>

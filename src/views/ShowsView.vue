@@ -5,16 +5,13 @@
       <SearchBar />
     </div>
     <ErrorIndicator v-if="isErrorInfiniteData" />
-    <LoadingIndicator v-if="isLoadingInfiniteData"/>
-      <div v-if="searchedShow">
-        <SearchedShows
-          :searchedShow="searchedShow"
-          :groupedShowsArraylength="groupedShows.length"
-        />
-      </div>
-      <div class="pb-20" v-if="groupedShows.length !== 0">
-        <GroupedShows :groupedShows="groupedShows" />
-      </div>
+    <LoadingIndicator v-if="isLoadingInfiniteData" />
+    <div v-if="searchedShow">
+      <SearchedShows :searchedShow="searchedShow" :groupedShowsArraylength="groupedShows.length" />
+    </div>
+    <div class="pb-20" v-if="groupedShows.length !== 0">
+      <GroupedShows :groupedShows="groupedShows" />
+    </div>
     <RefreshShowsPrompt v-if="!isMenuOpen" />
   </body>
 </template>
@@ -78,9 +75,7 @@ const {
   getNextPageParam: (lastPage: InfiniteResponse) => lastPage.nextCursor
 })
 
-const {
-  data: searchedData,
-} = useQuery({
+const { data: searchedData } = useQuery({
   queryKey: ['shows', searchQuery],
   //@ts-ignore
   queryFn: ({ queryKey }) => getShowBySearchQuery({ searchQuery: queryKey[1] })
