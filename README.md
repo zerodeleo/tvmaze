@@ -101,6 +101,7 @@ Continous deployment on Netlify
 - Optimize algorithms for better performance
 - Trigger fetch when the user interacts with a list that has few items
 - Enhance the UI with animations and a cleaner design
+- The menu for md:screens and above needs refactoring, for example: a button to show the user that he/she can close the menu
 - Implement features like liking and saving shows for later viewing
 
 ## Conclusion
