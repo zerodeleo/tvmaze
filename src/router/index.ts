@@ -1,18 +1,18 @@
 // router/index.js
 
 import { createRouter, createWebHistory } from 'vue-router'
-import MoviesView from '../views/MoviesView.vue'
-import MovieDetails from '../views/MovieDetails.vue'
+import ShowsView from '../views/ShowsView.vue'
+import ShowDetails from '../views/ShowDetails.vue'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/movies' },
-    { path: '/movies', component: MoviesView },
+    { path: '/', redirect: '/shows' },
+    { path: '/shows', component: ShowsView },
     {
-      path: '/movie/:id',
-      name: 'MovieDetails',
-      component: MovieDetails,
+      path: '/show/:id',
+      name: 'ShowDetails',
+      component: ShowDetails,
       props: true
     }
   ]

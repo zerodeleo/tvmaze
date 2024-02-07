@@ -1,4 +1,4 @@
-export interface Movie {
+export interface Show {
   id: number
   url: string
   name: string
@@ -89,6 +89,6 @@ export interface Nextepisode {
 }
 
 export interface InfiniteResponse {
-  pageData: Movie[] | []
+  pageData: Show[] | []
   nextCursor: number | undefined
 }

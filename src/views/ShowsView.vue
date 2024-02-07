@@ -6,40 +6,40 @@
     </div>
     <ErrorIndicator v-if="isErrorInfiniteData" />
     <LoadingIndicator v-if="isLoadingInfiniteData"/>
-      <div v-if="searchedMovie">
-        <SearchedMovies
-          :searchedMovie="searchedMovie"
-          :groupedMoviesArraylength="groupedMovies.length"
+      <div v-if="searchedShow">
+        <SearchedShows
+          :searchedShow="searchedShow"
+          :groupedShowsArraylength="groupedShows.length"
         />
       </div>
-      <div class="pb-20" v-if="groupedMovies.length !== 0">
-        <GroupedMovies :groupedMovies="groupedMovies" />
+      <div class="pb-20" v-if="groupedShows.length !== 0">
+        <GroupedShows :groupedShows="groupedShows" />
       </div>
-    <RefreshMoviesPrompt v-if="!isMenuOpen" />
+    <RefreshShowsPrompt v-if="!isMenuOpen" />
   </body>
 </template>
 
 <script setup lang="ts">
 import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { useInfiniteQuery, useQuery } from '@tanstack/vue-query'
-import { getInfiniteMovies, getMovieBySearchQuery } from '@/api/tvmaze'
+import { getInfiniteShows, getShowBySearchQuery } from '@/api/tvmaze'
 
-import type { InfiniteResponse, Movie } from '@/interface/tvmaze'
+import type { InfiniteResponse, Show } from '@/interface/tvmaze'
 import { type GroupKey, type SortKey } from '@/interface'
 
 import * as utils from '@/utils'
 import { CONTROLS } from '@/constants'
 
-import RefreshMoviesPrompt from '@/components/RefreshMoviesPrompt.vue'
+import RefreshShowsPrompt from '@/components/RefreshShowsPrompt.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
-import SearchedMovies from '@/components/SearchedMovies.vue'
-import GroupedMovies from '@/components/GroupedMovies.vue'
+import SearchedShows from '@/components/SearchedShows.vue'
+import GroupedShows from '@/components/GroupedShows.vue'
 import LoadingIndicator from '@/components/LoadingIndicator.vue'
 import ErrorIndicator from '@/components/ErrorIndicator.vue'
 
-const movies = ref<Movie[]>([])
-const searchedMovie = ref<Movie>()
+const shows = ref<Show[]>([])
+const searchedShow = ref<Show>()
 const selectedGenre = ref(localStorage.getItem('selectedGenre') || '')
 const selectedRating = ref(localStorage.getItem('selectedRating') || '')
 const sortKey = ref<SortKey>((localStorage.getItem('sortKey') as SortKey) || 'ratings-desc')
@@ -50,19 +50,19 @@ const numberOfShows = ref(0)
 const controls = ref(CONTROLS)
 const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
 
-const genres = computed<string[]>(() => utils.getValuesByKey(movies.value, 'genres'))
-const filterBySearchQuery = computed<Movie[]>(() =>
-  utils.filterBySearchQuery(movies.value, searchQuery.value)
+const genres = computed<string[]>(() => utils.getValuesByKey(shows.value, 'genres'))
+const filterBySearchQuery = computed<Show[]>(() =>
+  utils.filterBySearchQuery(shows.value, searchQuery.value)
 )
-const filteredByGenre = computed<Movie[]>(() =>
+const filteredByGenre = computed<Show[]>(() =>
   utils.filterByGenre(filterBySearchQuery.value, selectedGenre.value)
 )
-const filterByRating = computed<Movie[]>(() =>
+const filterByRating = computed<Show[]>(() =>
   utils.filterByRating(filteredByGenre.value, selectedRating.value)
 )
-const sortMovies = computed<Movie[]>(() => utils.sortMovies(filterByRating.value, sortKey.value))
-const groupedMovies = computed<[string, Movie[]][]>(() =>
-  utils.group(sortMovies.value, groupKey.value)
+const sortShows = computed<Show[]>(() => utils.sortShows(filterByRating.value, sortKey.value))
+const groupedShows = computed<[string, Show[]][]>(() =>
+  utils.group(sortShows.value, groupKey.value)
 )
 
 const {
@@ -72,18 +72,18 @@ const {
   isLoading: isLoadingInfiniteData,
   isError: isErrorInfiniteData
 } = useInfiniteQuery<InfiniteResponse, Error>({
-  queryKey: ['movies'],
+  queryKey: ['shows'],
   //@ts-ignore
-  queryFn: ({ pageParam = 1 }: { pageParam: number }) => getInfiniteMovies({ pageParam }),
+  queryFn: ({ pageParam = 1 }: { pageParam: number }) => getInfiniteShows({ pageParam }),
   getNextPageParam: (lastPage: InfiniteResponse) => lastPage.nextCursor
 })
 
 const {
   data: searchedData,
 } = useQuery({
-  queryKey: ['movies', searchQuery],
+  queryKey: ['shows', searchQuery],
   //@ts-ignore
-  queryFn: ({ queryKey }) => getMovieBySearchQuery({ searchQuery: queryKey[1] })
+  queryFn: ({ queryKey }) => getShowBySearchQuery({ searchQuery: queryKey[1] })
 })
 
 onBeforeMount(() => {
@@ -102,7 +102,7 @@ watch(infiniteData, () => {
   }
   const data = infiniteData.value.pages.flatMap((page) => (page as InfiniteResponse).pageData)
   if (data) {
-    movies.value = [...data]
+    shows.value = [...data]
     numberOfShows.value = data.length
   }
 })
@@ -117,11 +117,11 @@ watch(triggerFetch, () => {
 watch(searchedData, () => {
   const data = searchedData.value
   if (data) {
-    searchedMovie.value = data
+    searchedShow.value = data
   }
 })
 
-watch(movies, () => {
+watch(shows, () => {
   if (filterByRating.value.length === 0 && !isFetching) {
     fetchNextPage()
   }
@@ -129,7 +129,7 @@ watch(movies, () => {
 
 watch(searchQuery, () => {
   if (searchQuery.value === '') {
-    searchedMovie.value = undefined
+    searchedShow.value = undefined
   }
 })
 

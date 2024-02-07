@@ -1,10 +1,10 @@
 <template>
   <h2>Is this what you're looking for?</h2>
-  <h1 class="text-center my-6">{{ searchedMovie.name }}</h1>
+  <h1 class="text-center my-6">{{ searchedShow.name }}</h1>
   <div class="mb-20 text-center">
-    <MovieItem :movie="searchedMovie" />
+    <ShowItem :show="searchedShow" />
   </div>
-  <h4 v-if="groupedMoviesArraylength > 0">
+  <h4 v-if="groupedShowsArraylength > 0">
     Alternatively, here are other shows that match your search for "<span class="text-custom-200">{{
       searchQuery
     }}</span
@@ -12,13 +12,13 @@
   </h4>
 </template>
 <script setup lang="ts">
-import { type Movie } from '@/interface/tvmaze'
-import MovieItem from '@/components/MovieItem.vue'
+import { type Show } from '@/interface/tvmaze'
+import ShowItem from '@/components/ShowItem.vue'
 import { inject, ref } from 'vue'
 
-const { searchedMovie, groupedMoviesArraylength } = defineProps<{
-  searchedMovie: Movie
-  groupedMoviesArraylength: number
+const { searchedShow, groupedShowsArraylength } = defineProps<{
+  searchedShow: Show
+  groupedShowsArraylength: number
 }>()
 
 const searchQuery = inject('searchQuery', ref(''))

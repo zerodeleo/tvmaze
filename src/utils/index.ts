@@ -1,5 +1,5 @@
 import type { GroupKey, SortKey } from '@/interface'
-import type { Movie } from '@/interface/tvmaze'
+import type { Show } from '@/interface/tvmaze'
 
 export const getStartIndex = (currentPage: number, itemsPerPage: number) =>
   (currentPage - 1) * itemsPerPage
@@ -31,15 +31,15 @@ export const getValuesByKey = <T>(arr: T[] | null, key: string): string[] => {
   return values
 }
 
-export const filterBySearchQuery = (arr: Movie[], searchQuery: string) =>
+export const filterBySearchQuery = (arr: Show[], searchQuery: string) =>
   searchQuery
     ? arr.filter((item) => item.name.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()))
     : arr
 
-export const filterByGenre = (arr: Movie[], genre: string) =>
+export const filterByGenre = (arr: Show[], genre: string) =>
   genre ? arr.filter((item) => item.genres.includes(genre)) : arr
 
-export const filterByRating = (arr: Movie[], rating: string) => {
+export const filterByRating = (arr: Show[], rating: string) => {
   if (!rating) {
     return arr
   }
@@ -49,7 +49,7 @@ export const filterByRating = (arr: Movie[], rating: string) => {
   )
 }
 
-export const sortMovies = (arr: Movie[], sortKey: SortKey) => {
+export const sortShows = (arr: Show[], sortKey: SortKey) => {
   switch (sortKey) {
     case 'a-z':
       return arr.sort((a, b) => a.name.localeCompare(b.name))
@@ -80,14 +80,14 @@ export const sortMovies = (arr: Movie[], sortKey: SortKey) => {
   }
 }
 
-export const group = (arr: Movie[], groupKey: GroupKey): [string, Movie[]][] => {
+export const group = (arr: Show[], groupKey: GroupKey): [string, Show[]][] => {
   switch (groupKey) {
     case 'genres':
       return groupByGenre(arr)
     case 'status':
       return groupByKey(arr, 'status').sort((a, b) => a[0].localeCompare(b[0]))
     case 'rating':
-      return groupByDotNotationKey<Movie>(arr, 'rating.average')
+      return groupByDotNotationKey<Show>(arr, 'rating.average')
     case 'network':
       return groupByDotNotationKey(arr, 'network.name').sort((a, b) => a[0].localeCompare(b[0]))
     case 'country':
@@ -105,16 +105,16 @@ export const group = (arr: Movie[], groupKey: GroupKey): [string, Movie[]][] => 
   }
 }
 
-export const groupByYear = (arr: Movie[], objKey: keyof Movie) => {
-  const cache: { [year: string]: Movie[] } = {}
+export const groupByYear = (arr: Show[], objKey: keyof Show) => {
+  const cache: { [year: string]: Show[] } = {}
 
-  arr.forEach((movie: Movie) => {
-    const key = movie[objKey]
+  arr.forEach((show: Show) => {
+    const key = show[objKey]
     if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) {
       return
     }
 
-    const year = movie[objKey]?.slice(0, 4)
+    const year = show[objKey]?.slice(0, 4)
     if (!year) {
       return
     }
@@ -122,21 +122,21 @@ export const groupByYear = (arr: Movie[], objKey: keyof Movie) => {
     if (!cache[year]) {
       cache[year] = []
     }
-    cache[year].push(movie)
+    cache[year].push(show)
   })
   return Object.entries(cache)
 }
 
-export const groupByGenre = (arr: Movie[]): [string, Movie[]][] => {
-  const cache = arr.reduce((cache: any, movie) => {
-    if (!movie.genres) {
+export const groupByGenre = (arr: Show[]): [string, Show[]][] => {
+  const cache = arr.reduce((cache: any, show) => {
+    if (!show.genres) {
       return cache
     }
-    movie.genres.forEach((genre) => {
+    show.genres.forEach((genre) => {
       if (!cache[genre]) {
         cache[genre] = []
       }
-      cache[genre].push(movie)
+      cache[genre].push(show)
     })
     return cache
   }, {})
@@ -170,16 +170,16 @@ export const getNestedValue = <T>(obj: T, keys: string[]): any => {
   )
 }
 
-export const groupByKey = (arr: Movie[], objKey: keyof Movie): [string, Movie[]][] => {
-  const cache = arr.reduce((cache: any, movie: Movie) => {
-    const key = movie[objKey]
+export const groupByKey = (arr: Show[], objKey: keyof Show): [string, Show[]][] => {
+  const cache = arr.reduce((cache: any, show: Show) => {
+    const key = show[objKey]
     if (!key) {
       return cache
     }
     if (!cache[key]) {
       cache[key] = []
     }
-    cache[key].push(movie)
+    cache[key].push(show)
     return cache
   }, {})
   return Object.entries(cache)

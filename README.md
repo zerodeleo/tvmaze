@@ -73,9 +73,9 @@ The main components of the application include:
 
 - **ControlsMenu**: Renders controls for filtering and sorting TV shows.
 - **SearchBar**: Provides a search input for users to find TV shows by name.
-- **MovieListHorizontal**: Displays a horizontal list of TV shows and also triggers refetching when the user has reached the end of scroll.
-- **MovieItem**: Renders details of a single TV show.
-- **RefreshMoviesPrompt**: Prompts the user to refresh the list of TV shows.
+- **ShowListHorizontal**: Displays a horizontal list of TV shows and also triggers refetching when the user has reached the end of scroll.
+- **ShowItem**: Renders details of a single TV show.
+- **RefreshShowsPrompt**: Prompts the user to refresh the list of TV shows.
 
 ## Usage
 

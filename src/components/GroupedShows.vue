@@ -1,14 +1,14 @@
 <template>
-  <div v-for="(groupedMovie, index) in groupedMovies" :key="index">
-    <h2 :class="{ 'opacity-0': isMenuOpen }" class="title">{{ groupedMovie[0] }}</h2>
+  <div v-for="(groupedShow, index) in groupedShows" :key="index">
+    <h2 :class="{ 'opacity-0': isMenuOpen }" class="title">{{ groupedShow[0] }}</h2>
     <div ref="scrollList" @scroll="() => checkScrollEnd(index)" class="flex overflow-x-scroll">
-      <MovieListHorisontal :movies="groupedMovie[1]" />
+      <ShowListHorisontal :shows="groupedShow[1]" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import MovieListHorisontal from '@/components/MovieListHorisontal.vue'
-import type { Movie } from '@/interface/tvmaze'
+import ShowListHorisontal from '@/components/ShowListHorisontal.vue'
+import type { Show } from '@/interface/tvmaze'
 import type {
   FetchNextPageOptions,
   InfiniteData,
@@ -16,13 +16,13 @@ import type {
 } from '@tanstack/vue-query'
 import { inject, ref } from 'vue'
 
-const { groupedMovies } = defineProps<{ groupedMovies: [string, Movie[]][] }>()
+const { groupedShows } = defineProps<{ groupedShows: [string, Show[]][] }>()
 const isMenuOpen = inject('isMenuOpen', ref(false))
 const fetchNextPage =
   inject<
     (
       options?: FetchNextPageOptions | undefined
-    ) => Promise<InfiniteQueryObserverResult<InfiniteData<Movie[], unknown>, Error>>
+    ) => Promise<InfiniteQueryObserverResult<InfiniteData<Show[], unknown>, Error>>
   >('fetchNextPage')
 const scrollList = ref<HTMLElement[] | null>(null)
 
