@@ -1,15 +1,15 @@
 <template>
   <header>
-    <section :class="{ 'h-screen': isMenuOpen }" class="fixed w-full left-0 px-8 z-10">
+    <div :class="{ 'h-screen': isMenuOpen }" class="fixed w-full left-0 px-8 z-10">
       <ControlsMenu />
-    </section>
-    <section
+    </div>
+    <div
       class="flex justify-center items-center py-24 md:px-32 lg:px-44 md:my-28 flex-col text-center"
     >
       <h1 :class="{ 'opacity-0': isMenuOpen }">
         Discover and explore your favorite shows effortlessly.
       </h1>
-    </section>
+    </div>
   </header>
 </template>
 

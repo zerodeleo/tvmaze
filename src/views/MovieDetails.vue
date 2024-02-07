@@ -1,5 +1,5 @@
 <template>
-  <section v-if="movie" class="flex flex-col items-center text-center h-max-content">
+  <div v-if="movie" class="flex flex-col items-center text-center h-max-content">
     <div class="max-w-screen-md px-4 py-8">
       <h1 class="mb-8 h1-highlight">{{ movie.name }}</h1>
       <br />
@@ -23,7 +23,7 @@
       <br />
       <router-link to="/" class="underline text-center">Discover other shows</router-link>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">

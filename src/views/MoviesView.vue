@@ -4,8 +4,8 @@
     <div class="mb-10">
       <SearchBar />
     </div>
-    <ErrorIndicator v-if="isErrorInfiniteData || isErrorSearchQueryData" />
-    <LoadingIndicator v-if="isLoadingSearchQueryData || isLoadingInfiniteData"/>
+    <ErrorIndicator v-if="isErrorInfiniteData" />
+    <LoadingIndicator v-if="isLoadingInfiniteData"/>
       <div v-if="searchedMovie">
         <SearchedMovies
           :searchedMovie="searchedMovie"
@@ -80,8 +80,6 @@ const {
 
 const {
   data: searchedData,
-  isLoading: isLoadingSearchQueryData,
-  isError: isErrorSearchQueryData
 } = useQuery({
   queryKey: ['movies', searchQuery],
   //@ts-ignore

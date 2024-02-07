@@ -1,7 +1,7 @@
 <template>
-  <section class="flex flex-col justify-around">
+  <div class="flex flex-col justify-around">
     <FilterSummary />
-  </section>
+  </div>
 </template>
 <script setup lang="ts">
 import FilterSummary from './FilterSummary.vue'
