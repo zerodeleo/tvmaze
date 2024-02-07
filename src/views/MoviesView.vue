@@ -1,58 +1,38 @@
 <template>
-  <header>
-    <section :class="{ 'h-screen': isMenuOpen }" class="fixed w-full left-0 px-8 z-10">
-      <ControlsMenu />
-    </section>
-    <section
-      class="flex justify-center items-center py-24 md:px-32 lg:px-44 md:my-28 flex-col text-center"
-    >
-      <h1 :class="{ 'opacity-0': isMenuOpen }">
-        Discover and explore your favorite shows effortlessly.
-      </h1>
-    </section>
-  </header>
+  <HeaderComponent />
   <body v-if="infiniteData" @click="triggerFetch = true">
     <div class="mb-10">
       <SearchBar />
     </div>
     <div v-if="searchedMovie">
-      <h2>Is this what you're looking for?</h2>
-      <h1 class="text-center my-6">{{ searchedMovie.name }}</h1>
-      <div class="mb-20 text-center">
-        <MovieItem :movie="searchedMovie" />
-      </div>
-      <h4 v-if="groupedMovies.length > 0">
-        Alternatively, here are other shows that match your search for "<span
-          class="text-custom-200"
-          >{{ searchQuery }}</span
-        >".
-      </h4>
+      <SearchedMovies
+        :searchedMovie="searchedMovie"
+        :groupedMoviesArraylength="groupedMovies.length"
+      />
     </div>
     <div class="pb-20" v-if="groupedMovies.length !== 0">
-      <div v-for="(groupedMovie, index) in groupedMovies" :key="index">
-        <h2 :class="{ 'opacity-0': isMenuOpen }" class="title">{{ groupedMovie[0] }}</h2>
-        <div ref="scrollList" @scroll="() => checkScrollEnd(index)" class="flex overflow-x-scroll">
-          <MovieListHorisontal :movies="groupedMovie[1] as Movie[]" />
-        </div>
-      </div>
+      <GroupedMovies :groupedMovies="groupedMovies" />
     </div>
     <RefreshMoviesPrompt v-if="!isMenuOpen" />
   </body>
 </template>
 
 <script setup lang="ts">
+import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { useInfiniteQuery, useQuery } from '@tanstack/vue-query'
 import { getInfiniteMovies, getMovieBySearchQuery } from '@/api/tvmaze'
+
 import type { InfiniteResponse, Movie } from '@/interface/tvmaze'
-import { computed, onBeforeMount, provide, ref, watch } from 'vue'
-import * as utils from '@/utils'
 import { type GroupKey, type SortKey } from '@/interface'
+
+import * as utils from '@/utils'
 import { CONTROLS } from '@/constants'
-import MovieListHorisontal from '@/components/MovieListHorisontal.vue'
-import MovieItem from '@/components/MovieItem.vue'
-import ControlsMenu from '@/components/ControlsMenu.vue'
+
 import RefreshMoviesPrompt from '@/components/RefreshMoviesPrompt.vue'
 import SearchBar from '@/components/SearchBar.vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import SearchedMovies from '@/components/SearchedMovies.vue'
+import GroupedMovies from '@/components/GroupedMovies.vue'
 
 const movies = ref<Movie[]>([])
 const searchedMovie = ref<Movie>()
@@ -65,7 +45,6 @@ const searchQuery = ref('')
 const numberOfShows = ref(0)
 const controls = ref(CONTROLS)
 const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
-const scrollList = ref<HTMLElement[] | null>(null)
 
 const genres = computed<string[]>(() => utils.getValuesByKey(movies.value, 'genres'))
 const filterBySearchQuery = computed<Movie[]>(() =>
@@ -78,12 +57,13 @@ const filterByRating = computed<Movie[]>(() =>
   utils.filterByRating(filteredByGenre.value, selectedRating.value)
 )
 const sortMovies = computed<Movie[]>(() => utils.sortMovies(filterByRating.value, sortKey.value))
-const groupedMovies = computed(() => utils.group(sortMovies.value, groupKey.value))
+const groupedMovies = computed<[string, Movie[]][]>(() => utils.group(sortMovies.value, groupKey.value))
 
 const {
   data: infiniteData,
   fetchNextPage,
-  isFetching
+  isFetching,
+  isLoading: isLoadingInfiniteData
 } = useInfiniteQuery<InfiniteResponse, Error>({
   queryKey: ['movies'],
   //@ts-ignore
@@ -91,7 +71,7 @@ const {
   getNextPageParam: (lastPage: InfiniteResponse) => lastPage.nextCursor
 })
 
-const { data: searchedData } = useQuery({
+const { data: searchedData, isLoading: isLoadingSearchQueryData } = useQuery({
   queryKey: ['movies', searchQuery],
   //@ts-ignore
   queryFn: ({ queryKey }) => getMovieBySearchQuery({ searchQuery: queryKey[1] })
@@ -172,18 +152,6 @@ onBeforeMount(() => {
   }
 })
 
-const checkScrollEnd = (index: number) => {
-  if (scrollList.value) {
-    const container = scrollList.value[index]
-    if (container.scrollWidth > container.clientWidth) {
-      const isEndReached = container.scrollLeft + container.clientWidth >= container.scrollWidth
-      if (isEndReached) {
-        fetchNextPage()
-      }
-    }
-  }
-}
-
 provide('genres', genres)
 provide('selectedGenre', selectedGenre)
 provide('selectedRating', selectedRating)
@@ -196,4 +164,5 @@ provide('isMenuOpen', isMenuOpen)
 provide('numberOfShows', numberOfShows)
 provide('triggerFetch', triggerFetch)
 provide('isMenuOpen', isMenuOpen)
+provide('fetchNextPage', fetchNextPage)
 </script>

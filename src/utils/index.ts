@@ -80,14 +80,14 @@ export const sortMovies = (arr: Movie[], sortKey: SortKey) => {
   }
 }
 
-export const group = (arr: Movie[], groupKey: GroupKey) => {
+export const group = (arr: Movie[], groupKey: GroupKey): [string, Movie[]][] => {
   switch (groupKey) {
     case 'genres':
       return groupByGenre(arr)
     case 'status':
       return groupByKey(arr, 'status').sort((a, b) => a[0].localeCompare(b[0]))
     case 'rating':
-      return groupByDotNotationKey(arr, 'rating.average')
+      return groupByDotNotationKey<Movie>(arr, 'rating.average')
     case 'network':
       return groupByDotNotationKey(arr, 'network.name').sort((a, b) => a[0].localeCompare(b[0]))
     case 'country':
@@ -127,7 +127,7 @@ export const groupByYear = (arr: Movie[], objKey: keyof Movie) => {
   return Object.entries(cache)
 }
 
-export const groupByGenre = (arr: Movie[]) => {
+export const groupByGenre = (arr: Movie[]): [string, Movie[]][] => {
   const cache = arr.reduce((cache: any, movie) => {
     if (!movie.genres) {
       return cache
@@ -143,7 +143,7 @@ export const groupByGenre = (arr: Movie[]) => {
   return Object.entries(cache)
 }
 
-export const groupByDotNotationKey = <T>(arr: T[], objKey: string) => {
+export const groupByDotNotationKey = <T>(arr: T[], objKey: string): [string, T[]][] => {
   const cache: { [key: string]: T[] } = {}
   arr.forEach((item: T) => {
     const value = getNestedValue(item, objKey.split('.'))
@@ -170,7 +170,7 @@ export const getNestedValue = <T>(obj: T, keys: string[]): any => {
   )
 }
 
-export const groupByKey = (arr: Movie[], objKey: keyof Movie) => {
+export const groupByKey = (arr: Movie[], objKey: keyof Movie): [string, Movie[]][] => {
   const cache = arr.reduce((cache: any, movie: Movie) => {
     const key = movie[objKey]
     if (!key) {
