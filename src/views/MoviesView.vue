@@ -88,6 +88,16 @@ const {
   queryFn: ({ queryKey }) => getMovieBySearchQuery({ searchQuery: queryKey[1] })
 })
 
+onBeforeMount(() => {
+  const storedRandomPagesArrayPreviousFetches = localStorage.getItem('random')
+  if (storedRandomPagesArrayPreviousFetches) {
+    const parsed = JSON.parse(storedRandomPagesArrayPreviousFetches)
+    if (Array.isArray(parsed) && parsed.length > 100) {
+      localStorage.removeItem('random')
+    }
+  }
+})
+
 watch(infiniteData, () => {
   if (!infiniteData.value) {
     return
@@ -125,44 +135,6 @@ watch(searchQuery, () => {
   }
 })
 
-watch(selectedGenre, () => {
-  if (selectedGenre.value) {
-    localStorage.setItem('selectedGenre', selectedGenre.value)
-  }
-})
-
-watch(selectedRating, () => {
-  if (selectedRating.value) {
-    localStorage.setItem('selectedRating', JSON.stringify(selectedRating.value))
-  }
-})
-
-watch(sortKey, () => {
-  if (sortKey.value) {
-    localStorage.setItem('sortKey', JSON.stringify(sortKey.value))
-  }
-})
-
-watch(groupKey, () => {
-  if (groupKey.value) {
-    localStorage.setItem('groupKey', JSON.stringify(groupKey.value))
-  }
-})
-
-watch(isMenuOpen, () => {
-  localStorage.setItem('isMenuOpen', isMenuOpen.value ? JSON.stringify(isMenuOpen.value) : '')
-})
-
-onBeforeMount(() => {
-  const storedRandomPagesArrayPreviousFetches = localStorage.getItem('random')
-  if (storedRandomPagesArrayPreviousFetches) {
-    const parsed = JSON.parse(storedRandomPagesArrayPreviousFetches)
-    if (Array.isArray(parsed) && parsed.length > 100) {
-      localStorage.removeItem('random')
-    }
-  }
-})
-
 provide('genres', genres)
 provide('selectedGenre', selectedGenre)
 provide('selectedRating', selectedRating)
@@ -174,6 +146,5 @@ provide('controls', controls)
 provide('isMenuOpen', isMenuOpen)
 provide('numberOfShows', numberOfShows)
 provide('triggerFetch', triggerFetch)
-provide('isMenuOpen', isMenuOpen)
 provide('fetchNextPage', fetchNextPage)
 </script>
