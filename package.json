@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "author": "Julia Stjerna <zerodeleo@gmail.com",
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",

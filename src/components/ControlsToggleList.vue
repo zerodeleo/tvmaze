@@ -7,7 +7,12 @@
       <GroupByControlsList v-if="control.isToggled && control.key === 'groupBy'" />
       <OptionsList v-if="control.isToggled && control.key === 'options'" />
     </div>
-    <li class="fixed bottom-20 underline scale-125 cursor-pointer text-custom-100 hover:text-opacity-50" :class="{'hidden': !isMenuOpen, 'flex': isMenuOpen}">Close</li>
+    <li
+      class="fixed bottom-20 underline scale-125 cursor-pointer text-custom-100 hover:text-opacity-50"
+      :class="{ hidden: !isMenuOpen, flex: isMenuOpen }"
+    >
+      Close
+    </li>
   </ul>
 </template>
 

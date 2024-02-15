@@ -6,9 +6,9 @@
       <ShowItem :show="searchedShow" />
     </div>
     <h4 v-if="groupedShowsArraylength > 0">
-      Alternatively, here are other shows that match your search for "<span class="text-custom-200">{{
-        searchQuery
-      }}</span
+      Alternatively, here are other shows that match your search for "<span
+        class="text-custom-200"
+        >{{ searchQuery }}</span
       >".
     </h4>
   </article>

@@ -81,7 +81,7 @@ The main components of the application include:
 
 ### Setup
 
-1. Clone this repository.
+1. Clone this repository and check the requirements via engines field of package.json.
 2. Install dependencies using `npm install`.
 3. Run the development server using `npm run dev`.
 4. Access the application at the provided URL.

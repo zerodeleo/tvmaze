@@ -8,7 +8,10 @@
       <ErrorIndicator v-if="isErrorInfiniteData" />
       <LoadingIndicator v-if="isLoadingInfiniteData" />
       <section v-if="searchedShow">
-        <SearchedShows :searchedShow="searchedShow" :groupedShowsArraylength="processedShows.groupedShows.length" />
+        <SearchedShows
+          :searchedShow="searchedShow"
+          :groupedShowsArraylength="processedShows.groupedShows.length"
+        />
       </section>
       <section class="pb-20" v-if="processedShows.groupedShows.length !== 0">
         <GroupedShows :groupedShows="processedShows.groupedShows" />
@@ -51,18 +54,18 @@ const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
 
 const genres = computed<string[]>(() => utils.getValuesByKey(shows.value, 'genres'))
 const processedShows = computed(() => {
-  const filteredShows = utils.filterBySearchQuery(shows.value, searchQuery.value);
-  const filteredByGenre = utils.filterByGenre(filteredShows, selectedGenre.value);
-  const filteredByRating = utils.filterByRating(filteredByGenre, selectedRating.value);
-  const sortedShows = utils.sortShows(filteredByRating, sortKey.value);
-  const groupedShows = utils.group(sortedShows, groupKey.value);
-  
+  const filteredShows = utils.filterBySearchQuery(shows.value, searchQuery.value)
+  const filteredByGenre = utils.filterByGenre(filteredShows, selectedGenre.value)
+  const filteredByRating = utils.filterByRating(filteredByGenre, selectedRating.value)
+  const sortedShows = utils.sortShows(filteredByRating, sortKey.value)
+  const groupedShows = utils.group(sortedShows, groupKey.value)
+
   return {
     filteredByRating,
     sortedShows,
     groupedShows
-  };
-});
+  }
+})
 
 const {
   data: infiniteData,
