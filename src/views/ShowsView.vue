@@ -8,10 +8,10 @@
       <ErrorIndicator v-if="isErrorInfiniteData" />
       <LoadingIndicator v-if="isLoadingInfiniteData" />
       <section v-if="searchedShow">
-        <SearchedShows :searchedShow="searchedShow" :groupedShowsArraylength="groupedShows.length" />
+        <SearchedShows :searchedShow="searchedShow" :groupedShowsArraylength="processedShows.groupedShows.length" />
       </section>
-      <section class="pb-20" v-if="groupedShows.length !== 0">
-        <GroupedShows :groupedShows="groupedShows" />
+      <section class="pb-20" v-if="processedShows.groupedShows.length !== 0">
+        <GroupedShows :groupedShows="processedShows.groupedShows" />
       </section>
     </main>
     <RefreshShowsPrompt v-if="!isMenuOpen" />
@@ -50,19 +50,19 @@ const controls = ref(CONTROLS)
 const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
 
 const genres = computed<string[]>(() => utils.getValuesByKey(shows.value, 'genres'))
-const filterBySearchQuery = computed<Show[]>(() =>
-  utils.filterBySearchQuery(shows.value, searchQuery.value)
-)
-const filteredByGenre = computed<Show[]>(() =>
-  utils.filterByGenre(filterBySearchQuery.value, selectedGenre.value)
-)
-const filterByRating = computed<Show[]>(() =>
-  utils.filterByRating(filteredByGenre.value, selectedRating.value)
-)
-const sortShows = computed<Show[]>(() => utils.sortShows(filterByRating.value, sortKey.value))
-const groupedShows = computed<[string, Show[]][]>(() =>
-  utils.group(sortShows.value, groupKey.value)
-)
+const processedShows = computed(() => {
+  const filteredShows = utils.filterBySearchQuery(shows.value, searchQuery.value);
+  const filteredByGenre = utils.filterByGenre(filteredShows, selectedGenre.value);
+  const filteredByRating = utils.filterByRating(filteredByGenre, selectedRating.value);
+  const sortedShows = utils.sortShows(filteredByRating, sortKey.value);
+  const groupedShows = utils.group(sortedShows, groupKey.value);
+  
+  return {
+    filteredByRating,
+    sortedShows,
+    groupedShows
+  };
+});
 
 const {
   data: infiniteData,
@@ -119,7 +119,7 @@ watch(searchedData, () => {
 })
 
 watch(shows, () => {
-  if (filterByRating.value.length === 0 && !isFetching) {
+  if (processedShows.value.filteredByRating.length === 0 && !isFetching) {
     fetchNextPage()
   }
 })

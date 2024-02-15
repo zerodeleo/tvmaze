@@ -1,6 +1,6 @@
 <template>
-  <div v-if="show" class="flex flex-col items-center text-center h-max-content">
-    <div class="max-w-screen-md px-4 py-8">
+  <section v-if="show" class="flex flex-col items-center text-center h-max-content">
+    <article class="max-w-screen-md px-4 py-8">
       <h1 class="mb-8 h1-highlight">{{ show.name }}</h1>
       <br />
       <div class="w-full flex justify-center">
@@ -22,8 +22,8 @@
       <br />
       <br />
       <router-link to="/" class="underline text-center">Discover other shows</router-link>
-    </div>
-  </div>
+    </article>
+  </section>
 </template>
 
 <script setup lang="ts">
