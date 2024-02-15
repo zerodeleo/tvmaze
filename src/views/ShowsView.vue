@@ -1,17 +1,19 @@
 <template>
-  <HeaderComponent />
   <body @click="triggerFetch = true">
-    <div class="mb-10">
-      <SearchBar />
-    </div>
-    <ErrorIndicator v-if="isErrorInfiniteData" />
-    <LoadingIndicator v-if="isLoadingInfiniteData" />
-    <div v-if="searchedShow">
-      <SearchedShows :searchedShow="searchedShow" :groupedShowsArraylength="groupedShows.length" />
-    </div>
-    <div class="pb-20" v-if="groupedShows.length !== 0">
-      <GroupedShows :groupedShows="groupedShows" />
-    </div>
+    <HeaderComponent />
+    <main>
+      <section class="mb-10">
+        <SearchBar />
+      </section>
+      <ErrorIndicator v-if="isErrorInfiniteData" />
+      <LoadingIndicator v-if="isLoadingInfiniteData" />
+      <section v-if="searchedShow">
+        <SearchedShows :searchedShow="searchedShow" :groupedShowsArraylength="groupedShows.length" />
+      </section>
+      <section class="pb-20" v-if="groupedShows.length !== 0">
+        <GroupedShows :groupedShows="groupedShows" />
+      </section>
+    </main>
     <RefreshShowsPrompt v-if="!isMenuOpen" />
   </body>
 </template>

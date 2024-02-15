@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-row" v-for="show in shows" :key="show.id">
+  <li class="flex flex-row" v-for="show in shows" :key="show.id">
     <ShowItem :show="show" />
-  </div>
+  </li>
 </template>
 
 <script setup lang="ts">

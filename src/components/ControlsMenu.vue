@@ -12,13 +12,13 @@
     }"
   >
     <HamburgerMenuButton />
-    <nav
+    <div
       class="flex flex-col w-full md:flex md:items-center"
       :class="{ block: isMenuOpen, hidden: !isMenuOpen }"
     >
       <ControlsList />
       <ControlsToggleList />
-    </nav>
+    </div>
   </div>
 </template>
 

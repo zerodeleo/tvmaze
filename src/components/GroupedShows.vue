@@ -1,10 +1,10 @@
 <template>
-  <div v-for="(groupedShow, index) in groupedShows" :key="index">
+  <article v-for="(groupedShow, index) in groupedShows" :key="index">
     <h2 :class="{ 'opacity-0': isMenuOpen }" class="title">{{ groupedShow[0] }}</h2>
-    <div ref="scrollList" @scroll="() => checkScrollEnd(index)" class="flex overflow-x-scroll">
+    <ul ref="scrollList" @scroll="() => checkScrollEnd(index)" class="flex overflow-x-scroll">
       <ShowListHorisontal :shows="groupedShow[1]" />
-    </div>
-  </div>
+    </ul>
+  </article>
 </template>
 <script setup lang="ts">
 import ShowListHorisontal from '@/components/ShowListHorisontal.vue'

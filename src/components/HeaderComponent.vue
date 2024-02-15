@@ -1,8 +1,8 @@
 <template>
   <header>
-    <div :class="{ 'h-screen': isMenuOpen }" class="fixed w-full left-0 px-8 z-10">
+    <nav :class="{ 'h-screen': isMenuOpen }" class="fixed w-full left-0 top-2 px-8 z-10">
       <ControlsMenu />
-    </div>
+    </nav>
     <div
       class="flex justify-center items-center py-24 md:px-32 lg:px-44 md:my-28 flex-col text-center"
     >
