@@ -25,6 +25,7 @@
 import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { useInfiniteQuery, useQuery } from '@tanstack/vue-query'
 import { getInfiniteShows, getShowBySearchQuery } from '@/api/tvmaze'
+import { watchDebounced } from '@vueuse/core'
 
 import type { InfiniteResponse, Show } from '@/interface/tvmaze'
 import { type GroupKey, type SortKey } from '@/interface'
@@ -48,6 +49,7 @@ const sortKey = ref<SortKey>((localStorage.getItem('sortKey') as SortKey) || 'ra
 const groupKey = ref<GroupKey>((localStorage.getItem('groupKey') as GroupKey) || 'genres')
 const triggerFetch = ref(false)
 const searchQuery = ref('')
+const debouncedSearchQuery = ref('');
 const numberOfShows = ref(0)
 const controls = ref(CONTROLS)
 const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
@@ -81,9 +83,10 @@ const {
 })
 
 const { data: searchedData } = useQuery({
-  queryKey: ['shows', searchQuery],
+  queryKey: ['shows', debouncedSearchQuery],
   //@ts-ignore
-  queryFn: ({ queryKey }) => getShowBySearchQuery({ searchQuery: queryKey[1] })
+  queryFn: ({ queryKey }) => getShowBySearchQuery({ searchQuery: queryKey[1] }),
+  refetchOnWindowFocus: false,
 })
 
 onBeforeMount(() => {
@@ -127,11 +130,13 @@ watch(shows, () => {
   }
 })
 
-watch(searchQuery, () => {
+watchDebounced(searchQuery, () => {
   if (searchQuery.value === '') {
     searchedShow.value = undefined
+  } else {
+    debouncedSearchQuery.value = searchQuery.value;
   }
-})
+}, { debounce: 500, maxWait: 1000 })
 
 provide('genres', genres)
 provide('selectedGenre', selectedGenre)

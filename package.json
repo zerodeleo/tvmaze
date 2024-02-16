@@ -26,6 +26,7 @@
     "@mui/material": "^5.15.7",
     "@tanstack/vue-query": "^5.18.1",
     "@tanstack/vue-query-devtools": "^5.18.1",
+    "@vueuse/core": "^10.7.2",
     "axios": "^1.6.7",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
