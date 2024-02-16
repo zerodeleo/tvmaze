@@ -5,8 +5,14 @@
       <section class="mb-10">
         <SearchBar />
       </section>
-      <ErrorIndicator v-if="isErrorInfiniteData" />
-      <LoadingIndicator v-if="isLoadingInfiniteData" />
+      <section v-if="isErrorInfiniteData || isLoadingInfiniteData">
+        <ErrorIndicator v-if="isErrorInfiniteData" />
+        <LoadingIndicator v-if="isLoadingInfiniteData" />
+      </section>
+      <section v-if="isErrorSearchedData || isLoadingSearchData">
+        <LoadingSearchData v-if="isLoadingSearchData" />
+        <ErrorSearchData v-if="isErrorSearchedData" />
+      </section>
       <section v-if="searchedShow">
         <SearchedShows
           :searchedShow="searchedShow"
@@ -40,6 +46,8 @@ import SearchedShows from '@/components/SearchedShows.vue'
 import GroupedShows from '@/components/GroupedShows.vue'
 import LoadingIndicator from '@/components/LoadingIndicator.vue'
 import ErrorIndicator from '@/components/ErrorIndicator.vue'
+import LoadingSearchData from '@/components/LoadingSearchData.vue'
+import ErrorSearchData from '@/components/ErrorSearchData.vue'
 
 const shows = ref<Show[]>([])
 const searchedShow = ref<Show>()
@@ -49,7 +57,7 @@ const sortKey = ref<SortKey>((localStorage.getItem('sortKey') as SortKey) || 'ra
 const groupKey = ref<GroupKey>((localStorage.getItem('groupKey') as GroupKey) || 'genres')
 const triggerFetch = ref(false)
 const searchQuery = ref('')
-const debouncedSearchQuery = ref('');
+const debouncedSearchQuery = ref('')
 const numberOfShows = ref(0)
 const controls = ref(CONTROLS)
 const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
@@ -82,11 +90,16 @@ const {
   getNextPageParam: (lastPage: InfiniteResponse) => lastPage.nextCursor
 })
 
-const { data: searchedData } = useQuery({
+const {
+  data: searchedData,
+  isError: isErrorSearchedData,
+  isLoading: isLoadingSearchData
+} = useQuery({
   queryKey: ['shows', debouncedSearchQuery],
   //@ts-ignore
   queryFn: ({ queryKey }) => getShowBySearchQuery({ searchQuery: queryKey[1] }),
   refetchOnWindowFocus: false,
+  refetchInterval: false
 })
 
 onBeforeMount(() => {
@@ -130,13 +143,17 @@ watch(shows, () => {
   }
 })
 
-watchDebounced(searchQuery, () => {
-  if (searchQuery.value === '') {
-    searchedShow.value = undefined
-  } else {
-    debouncedSearchQuery.value = searchQuery.value;
-  }
-}, { debounce: 500, maxWait: 1000 })
+watchDebounced(
+  searchQuery,
+  () => {
+    if (searchQuery.value === '') {
+      searchedShow.value = undefined
+    } else {
+      debouncedSearchQuery.value = searchQuery.value
+    }
+  },
+  { debounce: 500, maxWait: 1000 }
+)
 
 provide('genres', genres)
 provide('selectedGenre', selectedGenre)
