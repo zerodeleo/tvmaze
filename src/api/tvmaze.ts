@@ -2,11 +2,6 @@ import type { InfiniteResponse, Show } from '@/interface/tvmaze'
 import { generateUniqueRandomNumber } from '@/utils'
 import axios, { type AxiosResponse } from 'axios'
 
-export const getShows = async (page = 1): Promise<Show[]> => {
-  const response = await axios.get(`https://api.tvmaze.com/shows?page=${page}`)
-  return response.data
-}
-
 export const getInfiniteShows = async ({ pageParam = 1 }): Promise<InfiniteResponse> => {
   const randomNumber = generateUniqueRandomNumber(1, 300)
   const response: AxiosResponse<Show[], Error> = await axios.get(

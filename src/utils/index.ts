@@ -1,16 +1,6 @@
 import type { GroupKey, SortKey } from '@/interface'
 import type { GroupedShows, Show } from '@/interface/tvmaze'
 
-export const getStartIndex = (currentPage: number, itemsPerPage: number) =>
-  (currentPage - 1) * itemsPerPage
-export const getEndIndex = (startIndex: number, itemsPerPage: number) => startIndex + itemsPerPage
-
-export const getPaginatedData = <T>(data: T[], startIndex: number, endIndex: number): T[] =>
-  data.slice(startIndex, endIndex)
-
-export const getTotalPages = <T>(arr: T[], itemsPerPage: number) =>
-  Math.ceil(arr!.length / itemsPerPage)
-
 export const getValuesByKey = <T>(arr: T[] | null, key: string): string[] => {
   if (!arr) {
     return []
