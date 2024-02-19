@@ -1,7 +1,7 @@
 <template>
   <div class="inline-block w-32 md:w-48 lg:w-56 pb-2 md:pb-4 pr-2 md:pr-4 cursor-pointer">
     <router-link :to="{ name: 'ShowDetails', params: { id: show.id } }">
-      <div class="h-38 md:h-80 scale mb-4">
+      <div class="h-44 bg-custom-100 bg-opacity-80 md:h-64 scale mb-4">
         <img
           v-if="show.image"
           class="w-full h-full mb-2 md:mb-2 object-cover"
