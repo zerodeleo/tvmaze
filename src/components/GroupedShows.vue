@@ -27,6 +27,7 @@ const fetchNextPage =
 const scrollList = ref<HTMLElement[] | null>(null)
 
 const checkScrollEnd = (index: number) => {
+  console.log(scrollList.value[index].children.length)
   if (scrollList.value) {
     const container = scrollList.value[index]
     if (container.scrollWidth > container.clientWidth) {

@@ -1,5 +1,5 @@
 <template>
-  <li class="flex flex-row" v-for="show in shows" :key="show.id">
+  <li :id="`${show.id}`" class="flex flex-row" v-for="show in shows" :key="show.id">
     <ShowItem :show="show" />
   </li>
 </template>

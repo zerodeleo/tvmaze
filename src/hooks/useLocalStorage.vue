@@ -11,30 +11,30 @@ export default function useLocalStorage() {
 
   watch(selectedGenre, (newValue) => {
     if (newValue) {
-      localStorage.setItem('selectedGenre', newValue)
+      localStorage.setItem('selectedGenre', newValue.toString())
     }
   })
 
   watch(selectedRating, (newValue) => {
     if (newValue) {
-      localStorage.setItem('selectedRating', JSON.stringify(newValue))
+      localStorage.setItem('selectedRating', newValue.toString())
     }
   })
 
   watch(sortKey, (newValue) => {
     if (newValue) {
-      localStorage.setItem('sortKey', JSON.stringify(newValue))
+      localStorage.setItem('sortKey', newValue.toString())
     }
   })
 
   watch(groupKey, (newValue) => {
     if (newValue) {
-      localStorage.setItem('groupKey', JSON.stringify(newValue))
+      localStorage.setItem('groupKey', newValue.toString())
     }
   })
 
   watch(isMenuOpen, (newValue) => {
-    localStorage.setItem('isMenuOpen', newValue ? JSON.stringify(newValue) : '')
+    localStorage.setItem('isMenuOpen', newValue ? newValue.toString() : '')
   })
 }
 </script>

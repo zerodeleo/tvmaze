@@ -1,5 +1,5 @@
 import type { GroupKey, SortKey } from '@/interface'
-import type { Show } from '@/interface/tvmaze'
+import type { GroupedShow, Show } from '@/interface/tvmaze'
 
 export const getStartIndex = (currentPage: number, itemsPerPage: number) =>
   (currentPage - 1) * itemsPerPage
@@ -80,14 +80,16 @@ export const sortShows = (arr: Show[], sortKey: SortKey) => {
   }
 }
 
-export const group = (arr: Show[], groupKey: GroupKey): [string, Show[]][] => {
+export const group = (arr: Show[], groupKey: GroupKey): GroupedShow => {
   switch (groupKey) {
     case 'genres':
-      return groupByGenre(arr)
+      return groupByGenre(arr).sort((a, b) => a[0].localeCompare(b[0]))
     case 'status':
       return groupByKey(arr, 'status').sort((a, b) => a[0].localeCompare(b[0]))
     case 'rating':
-      return groupByDotNotationKey<Show>(arr, 'rating.average')
+      return groupByDotNotationKey<Show>(arr, 'rating.average').sort((a, b) =>
+        b[0].localeCompare(a[0])
+      )
     case 'network':
       return groupByDotNotationKey(arr, 'network.name').sort((a, b) => a[0].localeCompare(b[0]))
     case 'country':
@@ -127,17 +129,19 @@ export const groupByYear = (arr: Show[], objKey: keyof Show) => {
   return Object.entries(cache)
 }
 
-export const groupByGenre = (arr: Show[]): [string, Show[]][] => {
+export const groupByGenre = (arr: Show[]): GroupedShow => {
   const cache = arr.reduce((cache: any, show) => {
     if (!show.genres) {
       return cache
     }
-    show.genres.forEach((genre) => {
-      if (!cache[genre]) {
-        cache[genre] = []
-      }
-      cache[genre].push(show)
-    })
+    let genre = show.genres[0]
+    if (!genre) {
+      genre = 'Others'
+    }
+    if (!cache[genre]) {
+      cache[genre] = []
+    }
+    cache[genre].push(show)
     return cache
   }, {})
   return Object.entries(cache)
@@ -170,7 +174,7 @@ export const getNestedValue = <T>(obj: T, keys: string[]): any => {
   )
 }
 
-export const groupByKey = (arr: Show[], objKey: keyof Show): [string, Show[]][] => {
+export const groupByKey = (arr: Show[], objKey: keyof Show): GroupedShow => {
   const cache = arr.reduce((cache: any, show: Show) => {
     const key = show[objKey]
     if (!key) {
@@ -213,6 +217,14 @@ export const generateUniqueRandomNumber = (min: number, max: number): number => 
   return randomNumber
 }
 
+export const generateNextNumber = () => {
+  const arr = getStoredRandomNumbers()
+  const lastNumber = arr[arr.length - 1]
+  const newNumber = lastNumber + 1
+  arr.push(newNumber)
+  return newNumber
+}
+
 const getStoredRandomNumbers = (): number[] => {
   let arr: any[] | string = localStorage.getItem('random') || []
   if (!Array.isArray(arr)) {
@@ -228,4 +240,16 @@ const getStoredRandomNumbers = (): number[] => {
 
 export const storeRandomNumbers = (arr: number[]): void => {
   localStorage.setItem('random', JSON.stringify(arr))
+}
+
+// According to TV Maze documentation
+export const reSyncAtPage = (id: number) => Math.round(id / 250)
+
+export const chunkData = (arr: Show[], chunkSize = 10) => {
+  return arr.reduce((acc: Show[][], _, index) => {
+    if (index % chunkSize === 0) {
+      acc.push(arr.slice(index, index + chunkSize))
+    }
+    return acc
+  }, [])
 }

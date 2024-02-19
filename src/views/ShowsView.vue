@@ -86,7 +86,7 @@ const {
 } = useInfiniteQuery<InfiniteResponse, Error>({
   queryKey: ['shows'],
   //@ts-ignore
-  queryFn: ({ pageParam = 1 }: { pageParam: number }) => getInfiniteShows({ pageParam }),
+  queryFn: ({ pageParam = 0 }: { pageParam: number }) => getInfiniteShows({ pageParam }),
   getNextPageParam: (lastPage: InfiniteResponse) => lastPage.nextCursor
 })
 
