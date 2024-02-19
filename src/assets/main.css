@@ -5,16 +5,16 @@
 
 .theme-dark {
   --color-custom-100: 244, 244, 244;
-  --color-custom-200: 182, 100, 182;
-  --color-custom-300: 142, 20, 142;
+  --color-custom-200: 205, 142, 205;
+  --color-custom-300: 216, 54, 216;
   --color-custom-400: 42, 10, 42;
 }
 
 .theme-light {
-  --color-custom-100: 31, 31, 61;
-  --color-custom-200: 153, 153, 204;
-  --color-custom-300: 221, 221, 238;
-  --color-custom-400: 248, 248, 252;
+  --color-custom-100: 42, 10, 42;
+  --color-custom-200: 216, 54, 216;
+  --color-custom-300: 205, 142, 205;
+  --color-custom-400: 244, 244, 244;
 }
 
 h2,
@@ -85,5 +85,5 @@ h6 {
 }
 
 .input {
-  @apply placeholder:text-custom-400 placeholder:font-montserrat bg-custom-200 px-5 py-2 w-full shadow-md rounded focus:ring-custom-400 focus:border-custom-400;
+  @apply placeholder:text-black placeholder:font-montserrat bg-custom-100 px-5 py-2 w-full shadow-md rounded focus:ring-custom-400 focus:border-custom-400;
 }

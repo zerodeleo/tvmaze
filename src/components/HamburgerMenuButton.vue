@@ -1,5 +1,6 @@
 <template>
   <button
+    aria-label="Menu"
     class="flex mt-2 md:hidden w-full z-20"
     :class="{ 'justify-start': isMenuOpen, 'justify-end': !isMenuOpen }"
     @click="handleToggleMenu"
