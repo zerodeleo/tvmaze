@@ -132,14 +132,12 @@ export const groupByGenre = (arr: Show[]): GroupedShows => {
     if (!show.genres) {
       return cache
     }
-    let genre = show.genres[0]
-    if (!genre) {
-      genre = 'Others'
-    }
-    if (!cache[genre]) {
-      cache[genre] = []
-    }
-    cache[genre].push(show)
+    show.genres.forEach((genre) => {
+      if (!cache[genre]) {
+        cache[genre] = []
+      }
+      cache[genre].push(show)
+    })
     return cache
   }, {})
   return Object.entries(cache)

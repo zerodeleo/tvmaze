@@ -90,6 +90,7 @@ describe('groupByGenre', () => {
           { title: 'Show 4', genres: ['Action', 'Thriller'] }
         ]
       ],
+      ['Adventure', [{ title: 'Show 1', genres: ['Action', 'Adventure'] }]],
       ['Drama', [{ title: 'Show 2', genres: ['Drama'] }]],
       [
         'Comedy',
@@ -97,7 +98,10 @@ describe('groupByGenre', () => {
           { title: 'Show 3', genres: ['Comedy', 'Romance'] },
           { title: 'Show 5', genres: ['Comedy', 'Family'] }
         ]
-      ]
+      ],
+      ['Romance', [{ title: 'Show 3', genres: ['Comedy', 'Romance'] }]],
+      ['Thriller', [{ title: 'Show 4', genres: ['Action', 'Thriller'] }]],
+      ['Family', [{ title: 'Show 5', genres: ['Comedy', 'Family'] }]]
     ])
   })
 
@@ -114,8 +118,8 @@ describe('groupByGenre', () => {
     ]
     const result = groupByGenre(showsWithoutGenres)
     expect(result).toEqual([
-      ['Others', [{ title: 'Show 1', genres: [] }]],
-      ['Comedy', [{ title: 'Show 3', genres: ['Comedy', 'Drama'] }]]
+      ['Comedy', [{ title: 'Show 3', genres: ['Comedy', 'Drama'] }]],
+      ['Drama', [{ title: 'Show 3', genres: ['Comedy', 'Drama'] }]]
     ])
   })
 })
@@ -223,7 +227,7 @@ describe('groupByYear', () => {
 
   it('should handle empty input array', () => {
     const shows: Show[] = []
-    const result: GroupedShows = []
+    const result: [string, Show[]][] = []
     const groupedByYear = groupByYear(shows, 'premiered')
     expect(groupedByYear).toEqual(result)
   })
