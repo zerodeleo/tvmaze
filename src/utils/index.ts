@@ -1,5 +1,5 @@
 import type { GroupKey, SortKey } from '@/interface'
-import type { Show } from '@/interface/tvmaze'
+import type { GroupedShows, Show } from '@/interface/tvmaze'
 
 export const getStartIndex = (currentPage: number, itemsPerPage: number) =>
   (currentPage - 1) * itemsPerPage
@@ -80,10 +80,10 @@ export const sortShows = (arr: Show[], sortKey: SortKey) => {
   }
 }
 
-export const group = (arr: Show[], groupKey: GroupKey): [string, Show[]][] => {
+export const group = (arr: Show[], groupKey: GroupKey): GroupedShows => {
   switch (groupKey) {
     case 'genres':
-      return groupByGenre(arr)
+      return groupByGenre(arr).sort((a, b) => a[0].localeCompare(b[0]))
     case 'status':
       return groupByKey(arr, 'status').sort((a, b) => a[0].localeCompare(b[0]))
     case 'rating':
@@ -127,17 +127,19 @@ export const groupByYear = (arr: Show[], objKey: keyof Show) => {
   return Object.entries(cache)
 }
 
-export const groupByGenre = (arr: Show[]): [string, Show[]][] => {
+export const groupByGenre = (arr: Show[]): GroupedShows => {
   const cache = arr.reduce((cache: any, show) => {
     if (!show.genres) {
       return cache
     }
-    show.genres.forEach((genre) => {
-      if (!cache[genre]) {
-        cache[genre] = []
-      }
-      cache[genre].push(show)
-    })
+    let genre = show.genres[0]
+    if (!genre) {
+      genre = 'Others'
+    }
+    if (!cache[genre]) {
+      cache[genre] = []
+    }
+    cache[genre].push(show)
     return cache
   }, {})
   return Object.entries(cache)
@@ -170,7 +172,7 @@ export const getNestedValue = <T>(obj: T, keys: string[]): any => {
   )
 }
 
-export const groupByKey = (arr: Show[], objKey: keyof Show): [string, Show[]][] => {
+export const groupByKey = (arr: Show[], objKey: keyof Show): GroupedShows => {
   const cache = arr.reduce((cache: any, show: Show) => {
     const key = show[objKey]
     if (!key) {

@@ -8,7 +8,7 @@
 </template>
 <script setup lang="ts">
 import ShowListHorisontal from '@/components/ShowListHorisontal.vue'
-import type { Show } from '@/interface/tvmaze'
+import type { GroupedShows, Show } from '@/interface/tvmaze'
 import type {
   FetchNextPageOptions,
   InfiniteData,
@@ -16,7 +16,7 @@ import type {
 } from '@tanstack/vue-query'
 import { inject, ref } from 'vue'
 
-const { groupedShows } = defineProps<{ groupedShows: [string, Show[]][] }>()
+const { groupedShows } = defineProps<{ groupedShows: GroupedShows }>()
 const isMenuOpen = inject('isMenuOpen', ref(false))
 const fetchNextPage =
   inject<

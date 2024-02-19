@@ -1,3 +1,5 @@
+export type GroupedShows = [string, Show[]][]
+
 export interface Show {
   id: number
   url: string
