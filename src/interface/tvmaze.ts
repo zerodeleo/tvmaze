@@ -1,4 +1,10 @@
-export type GroupedShows = [string, Show[]][]
+import type { GroupKey } from '.'
+
+export interface GroupedShow {
+  groupKey: GroupKey
+  groupTitle: string
+  shows: Show[]
+}
 
 export interface Show {
   id: number

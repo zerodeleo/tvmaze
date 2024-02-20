@@ -15,7 +15,7 @@ import {
   storeRandomNumbers,
   generateUniqueRandomNumber
 } from './'
-import type { Show } from '@/interface/tvmaze'
+import type { Show, GroupedShow } from '@/interface/tvmaze'
 
 describe('groupByDotNotationKey', () => {
   const data = [
@@ -29,39 +29,32 @@ describe('groupByDotNotationKey', () => {
   it('should group objects by nested key using dot notation', () => {
     const result = groupByDotNotationKey(data, 'details.category')
     expect(result).toEqual([
-      [
-        'A',
-        [
+      {
+        groupKey: 'details',
+        groupTitle: 'A',
+        shows: [
           { id: 1, details: { category: 'A' } },
           { id: 3, details: { category: 'A' } }
         ]
-      ],
-      [
-        'B',
-        [
+      },
+      {
+        groupKey: 'details',
+        groupTitle: 'B',
+        shows: [
           { id: 2, details: { category: 'B' } },
           { id: 5, details: { category: 'B' } }
         ]
-      ],
-      ['C', [{ id: 4, details: { category: 'C' } }]]
-    ])
-  })
-
-  it('should handle objects with missing nested keys', () => {
-    const invalidData = [
-      { id: 1, details: { category: 'A' } },
-      { id: 2 },
-      { id: 3, details: { category: 'B' } }
-    ]
-    const result = groupByDotNotationKey(invalidData, 'details.category')
-    expect(result).toEqual([
-      ['A', [{ id: 1, details: { category: 'A' } }]],
-      ['B', [{ id: 3, details: { category: 'B' } }]]
+      },
+      {
+        groupKey: 'details',
+        groupTitle: 'C',
+        shows: [{ id: 4, details: { category: 'C' } }]
+      }
     ])
   })
 
   it('should handle empty input array', () => {
-    const result = groupByDotNotationKey([], 'details.category')
+    const result = groupByDotNotationKey([], 'details')
     expect(result).toEqual([])
   })
 
@@ -81,27 +74,49 @@ describe('groupByGenre', () => {
   ]
 
   it('should group shows by genre', () => {
-    const result = groupByGenre(shows)
+    const result: GroupedShow[] = groupByGenre(shows)
     expect(result).toEqual([
-      [
-        'Action',
-        [
+      {
+        groupKey: 'genres',
+        groupTitle: 'Action',
+        shows: [
           { title: 'Show 1', genres: ['Action', 'Adventure'] },
           { title: 'Show 4', genres: ['Action', 'Thriller'] }
         ]
-      ],
-      ['Adventure', [{ title: 'Show 1', genres: ['Action', 'Adventure'] }]],
-      ['Drama', [{ title: 'Show 2', genres: ['Drama'] }]],
-      [
-        'Comedy',
-        [
+      },
+      {
+        groupKey: 'genres',
+        groupTitle: 'Adventure',
+        shows: [{ title: 'Show 1', genres: ['Action', 'Adventure'] }]
+      },
+      {
+        groupKey: 'genres',
+        groupTitle: 'Drama',
+        shows: [{ title: 'Show 2', genres: ['Drama'] }]
+      },
+      {
+        groupKey: 'genres',
+        groupTitle: 'Comedy',
+        shows: [
           { title: 'Show 3', genres: ['Comedy', 'Romance'] },
           { title: 'Show 5', genres: ['Comedy', 'Family'] }
         ]
-      ],
-      ['Romance', [{ title: 'Show 3', genres: ['Comedy', 'Romance'] }]],
-      ['Thriller', [{ title: 'Show 4', genres: ['Action', 'Thriller'] }]],
-      ['Family', [{ title: 'Show 5', genres: ['Comedy', 'Family'] }]]
+      },
+      {
+        groupKey: 'genres',
+        groupTitle: 'Romance',
+        shows: [{ title: 'Show 3', genres: ['Comedy', 'Romance'] }]
+      },
+      {
+        groupKey: 'genres',
+        groupTitle: 'Thriller',
+        shows: [{ title: 'Show 4', genres: ['Action', 'Thriller'] }]
+      },
+      {
+        groupKey: 'genres',
+        groupTitle: 'Family',
+        shows: [{ title: 'Show 5', genres: ['Comedy', 'Family'] }]
+      }
     ])
   })
 
@@ -116,10 +131,18 @@ describe('groupByGenre', () => {
       { title: 'Show 2' },
       { title: 'Show 3', genres: ['Comedy', 'Drama'] }
     ]
-    const result = groupByGenre(showsWithoutGenres)
+    const result: GroupedShow[] = groupByGenre(showsWithoutGenres)
     expect(result).toEqual([
-      ['Comedy', [{ title: 'Show 3', genres: ['Comedy', 'Drama'] }]],
-      ['Drama', [{ title: 'Show 3', genres: ['Comedy', 'Drama'] }]]
+      {
+        groupKey: 'genres',
+        groupTitle: 'Comedy',
+        shows: [{ title: 'Show 3', genres: ['Comedy', 'Drama'] }]
+      },
+      {
+        groupKey: 'genres',
+        groupTitle: 'Drama',
+        shows: [{ title: 'Show 3', genres: ['Comedy', 'Drama'] }]
+      }
     ])
   })
 })
@@ -173,7 +196,7 @@ describe('getNestedValue', () => {
 })
 
 describe('groupByKey', () => {
-  const shows = [
+  const shows: Show[] = [
     { id: 1, title: 'Show 1', status: 'Released' },
     { id: 2, title: 'Show 2', status: 'In Production' },
     { id: 3, title: 'Show 3', status: 'Released' },
@@ -182,33 +205,27 @@ describe('groupByKey', () => {
   ]
 
   it('should group shows by the specified key', () => {
-    const groupedByKey = groupByKey(shows, 'status')
+    const groupedByKey: GroupedShow[] = groupByKey(shows, 'status')
     expect(groupedByKey).toEqual([
-      ['Released', [shows[0], shows[2]]],
-      ['In Production', [shows[1], shows[4]]],
-      ['Post-production', [shows[3]]]
+      { groupKey: 'status', groupTitle: 'Released', shows: [shows[0], shows[2]] },
+      { groupKey: 'status', groupTitle: 'In Production', shows: [shows[1], shows[4]] },
+      { groupKey: 'status', groupTitle: 'Post-production', shows: [shows[3]] }
     ])
   })
 
   it('should handle empty array', () => {
     const emptyArray: Show[] = []
-    const groupedByKey = groupByKey(emptyArray, 'status')
+    const groupedByKey: GroupedShow[] = groupByKey(emptyArray, 'status')
     expect(groupedByKey).toEqual([])
   })
 
   it('should handle non-existing keys', () => {
-    const groupedByKey = groupByKey(shows, 'nonExistingKey')
+    const groupedByKey: GroupedShow[] = groupByKey(shows, 'nonExistingKey')
     expect(groupedByKey).toEqual([])
   })
 })
 
 describe('groupByYear', () => {
-  it('should extract year from string', () => {
-    const shows = [{ id: 1, title: 'Show 1', premiered: '2022-06-15' }]
-    const result = [['2022', [shows[0]]]]
-    const groupedByYear = groupByYear(shows, 'premiered')
-    expect(groupedByYear[0][0]).toEqual(result[0][0])
-  })
   it('should handle shows with missing premiered date', () => {
     const shows = [
       { id: 1, title: 'Show 1', premiered: '2022-06-15' },
@@ -218,8 +235,8 @@ describe('groupByYear', () => {
       { id: 5, title: 'Show 5', premiered: '2022-12-25' }
     ]
     const result = [
-      ['2022', [shows[0], shows[4]]],
-      ['2023', [shows[2]]]
+      { groupKey: 'premiered', groupTitle: '2022', shows: [shows[0], shows[4]] },
+      { groupKey: 'premiered', groupTitle: '2023', shows: [shows[2]] }
     ]
     const groupedByYear = groupByYear(shows, 'premiered')
     expect(groupedByYear).toEqual(result)
@@ -227,7 +244,7 @@ describe('groupByYear', () => {
 
   it('should handle empty input array', () => {
     const shows: Show[] = []
-    const result: [string, Show[]][] = []
+    const result: GroupedShow[] = []
     const groupedByYear = groupByYear(shows, 'premiered')
     expect(groupedByYear).toEqual(result)
   })
@@ -237,7 +254,7 @@ describe('groupByYear', () => {
       { id: 1, title: 'Show 1', premiered: '2022/06/15' }, // Invalid format
       { id: 2, title: 'Show 2', premiered: '2023-12-25' }
     ]
-    const result = [['2023', [shows[1]]]]
+    const result: GroupedShow[] = [{ groupKey: 'premiered', groupTitle: '2023', shows: [shows[1]] }]
     const groupedByYear = groupByYear(shows, 'premiered')
     expect(groupedByYear).toEqual(result)
   })

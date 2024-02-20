@@ -11,6 +11,7 @@ export type SortKey =
 export type GroupKey =
   | 'genres'
   | 'rating'
+  | 'premiered'
   | 'premiered-asc'
   | 'premiered-desc'
   | 'status'

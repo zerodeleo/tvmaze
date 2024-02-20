@@ -1,5 +1,5 @@
 import type { GroupKey, SortKey } from '@/interface'
-import type { GroupedShows, Show } from '@/interface/tvmaze'
+import type { GroupedShow, Show } from '@/interface/tvmaze'
 
 export const getValuesByKey = <T>(arr: T[] | null, key: string): string[] => {
   if (!arr) {
@@ -70,41 +70,58 @@ export const sortShows = (arr: Show[], sortKey: SortKey) => {
   }
 }
 
-export const group = (arr: Show[], groupKey: GroupKey): GroupedShows => {
+const generateGroupedShowArray = <T>(
+  cache: { [key: string]: Show[] | T[] },
+  groupKey: GroupKey
+) => {
+  return Object.entries(cache).map(([groupTitle, shows]) => ({
+    groupKey,
+    groupTitle,
+    shows
+  })) as GroupedShow[]
+}
+
+export const group = (arr: Show[], groupKey: GroupKey): GroupedShow[] => {
   switch (groupKey) {
     case 'genres':
-      return groupByGenre(arr).sort((a, b) => a[0].localeCompare(b[0]))
+      return groupByGenre(arr).sort((a, b) => a.groupTitle.localeCompare(b.groupTitle))
     case 'status':
-      return groupByKey(arr, 'status').sort((a, b) => a[0].localeCompare(b[0]))
+      return groupByKey(arr, 'status').sort((a, b) => a.groupTitle.localeCompare(b.groupTitle))
     case 'rating':
-      return groupByDotNotationKey<Show>(arr, 'rating.average')
+      return groupByDotNotationKey<Show>(arr, 'rating.average').sort((a, b) =>
+        a.groupTitle.localeCompare(b.groupTitle)
+      )
     case 'network':
-      return groupByDotNotationKey(arr, 'network.name').sort((a, b) => a[0].localeCompare(b[0]))
+      return groupByDotNotationKey(arr, 'network.name').sort((a, b) =>
+        a.groupTitle.localeCompare(b.groupTitle)
+      )
     case 'country':
       return groupByDotNotationKey(arr, 'network.country.name').sort((a, b) =>
-        a[0].localeCompare(b[0])
+        a.groupTitle.localeCompare(b.groupTitle)
       )
     case 'language':
-      return groupByKey(arr, 'language').sort((a, b) => a[0].localeCompare(b[0]))
+      return groupByKey(arr, 'language').sort((a, b) => a.groupTitle.localeCompare(b.groupTitle))
     case 'premiered-asc':
-      return groupByYear(arr, 'premiered')
+      return groupByYear(arr, 'premiered').sort((a, b) => a.groupTitle.localeCompare(b.groupTitle))
     case 'premiered-desc':
-      return groupByYear(arr, 'premiered').reverse()
+      return groupByYear(arr, 'premiered')
+        .sort((a, b) => a.groupTitle.localeCompare(b.groupTitle))
+        .reverse()
     default:
       return groupByGenre(arr)
   }
 }
 
-export const groupByYear = (arr: Show[], objKey: keyof Show) => {
+export const groupByYear = (arr: Show[], groupKey: GroupKey): GroupedShow[] => {
   const cache: { [year: string]: Show[] } = {}
 
   arr.forEach((show: Show) => {
-    const key = show[objKey]
+    const key = show[groupKey as keyof Show]
     if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) {
       return
     }
 
-    const year = show[objKey]?.slice(0, 4)
+    const year = show[groupKey as keyof Show]?.slice(0, 4)
     if (!year) {
       return
     }
@@ -114,10 +131,11 @@ export const groupByYear = (arr: Show[], objKey: keyof Show) => {
     }
     cache[year].push(show)
   })
-  return Object.entries(cache)
+
+  return generateGroupedShowArray(cache, groupKey)
 }
 
-export const groupByGenre = (arr: Show[]): GroupedShows => {
+export const groupByGenre = (arr: Show[]) => {
   const cache = arr.reduce((cache: any, show) => {
     if (!show.genres) {
       return cache
@@ -130,24 +148,32 @@ export const groupByGenre = (arr: Show[]): GroupedShows => {
     })
     return cache
   }, {})
-  return Object.entries(cache)
+
+  return generateGroupedShowArray(cache, 'genres')
 }
 
-export const groupByDotNotationKey = <T>(arr: T[], objKey: string): [string, T[]][] => {
+export const groupByDotNotationKey = <T>(arr: T[], groupKey: string): GroupedShow[] => {
   const cache: { [key: string]: T[] } = {}
   arr.forEach((item: T) => {
-    const value = getNestedValue(item, objKey.split('.'))
+    const value = getNestedValue(item, groupKey.split('.'))
     if (!value) {
-      return []
+      return
     }
     if (value) {
-      if (!cache[String(value)]) {
-        cache[String(value)] = []
+      console.log(value)
+      console.log(item)
+      if (!cache[value]) {
+        cache[value] = []
       }
-      cache[String(value)].push(item)
+      cache[value].push(item)
     }
   })
-  return Object.entries(cache)
+
+  const key = groupKey.split('.')[0] as GroupKey
+
+  const result = generateGroupedShowArray<T>(cache, key)
+
+  return result
 }
 
 export const getNestedValue = <T>(obj: T, keys: string[]): any => {
@@ -160,9 +186,9 @@ export const getNestedValue = <T>(obj: T, keys: string[]): any => {
   )
 }
 
-export const groupByKey = (arr: Show[], objKey: keyof Show): GroupedShows => {
+export const groupByKey = (arr: Show[], groupKey: GroupKey): GroupedShow[] => {
   const cache = arr.reduce((cache: any, show: Show) => {
-    const key = show[objKey]
+    const key = show[groupKey as keyof Show]
     if (!key) {
       return cache
     }
@@ -172,7 +198,8 @@ export const groupByKey = (arr: Show[], objKey: keyof Show): GroupedShows => {
     cache[key].push(show)
     return cache
   }, {})
-  return Object.entries(cache)
+
+  return generateGroupedShowArray(cache, groupKey)
 }
 
 export const getRandomNumber = (min: number, max: number) => {
