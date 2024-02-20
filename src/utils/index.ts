@@ -1,5 +1,5 @@
 import type { GroupKey, SortKey } from '@/interface'
-import type { GroupedShow, Show } from '@/interface/tvmaze'
+import type { ChunkedShow, GroupedShow, Show } from '@/interface/tvmaze'
 
 export const getValuesByKey = <T>(arr: T[] | null, key: string): string[] => {
   if (!arr) {
@@ -243,4 +243,31 @@ const getStoredRandomNumbers = (): number[] => {
 
 export const storeRandomNumbers = (arr: number[]): void => {
   localStorage.setItem('random', JSON.stringify(arr))
+}
+
+export const chunkArray = (array: Show[], chunkSize: number) => {
+  return array.reduce((result: any, item, index) => {
+    const chunkIndex = Math.floor(index / chunkSize)
+
+    if (!result[chunkIndex]) {
+      result[chunkIndex] = []
+    }
+
+    result[chunkIndex].push(item)
+    return result
+  }, []) as Show[][]
+}
+
+export const chunk = (arr: GroupedShow[]): ChunkedShow[] => {
+  if (!arr.length) {
+    return []
+  }
+  const chunkSize = 6
+  const chunkedShows = arr.map((groupedShow) => ({
+    groupKey: groupedShow.groupKey,
+    groupTitle: groupedShow.groupTitle,
+    shows: groupedShow.shows,
+    chunkedShows: chunkArray(groupedShow.shows, chunkSize)
+  }))
+  return chunkedShows
 }

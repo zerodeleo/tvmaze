@@ -19,8 +19,8 @@
           :groupedShowsArraylength="processedShows.groupedShows.length"
         />
       </section>
-      <section class="pb-20" v-if="processedShows.groupedShows.length !== 0">
-        <GroupedShows :groupedShows="processedShows.groupedShows" />
+      <section class="pb-20" v-if="processedShows.chunkedShows">
+        <GroupedShows :chunkedShows="processedShows.chunkedShows" />
       </section>
     </main>
     <RefreshShowsPrompt v-if="!isMenuOpen" />
@@ -62,20 +62,28 @@ const numberOfShows = ref(0)
 const controls = ref(CONTROLS)
 const isMenuOpen = ref(!!localStorage.getItem('isMenuOpen') || false)
 
+const currentChunkIndexes = ref<number[]>([])
+
 const genres = computed<string[]>(() => utils.getValuesByKey(shows.value, 'genres'))
-const processedShows = computed(() => {
-  const filteredShows = utils.filterBySearchQuery(shows.value, searchQuery.value)
-  const filteredByGenre = utils.filterByGenre(filteredShows, selectedGenre.value)
-  const filteredByRating = utils.filterByRating(filteredByGenre, selectedRating.value)
-  const sortedShows = utils.sortShows(filteredByRating, sortKey.value)
-  const groupedShows = utils.group(sortedShows, groupKey.value)
+const computeProcessedShows = () => {
+  const filteredShows = utils.filterBySearchQuery(shows.value, searchQuery.value);
+  const filteredByGenre = utils.filterByGenre(filteredShows, selectedGenre.value);
+  const filteredByRating = utils.filterByRating(filteredByGenre, selectedRating.value);
+  const sortedShows = utils.sortShows(filteredByRating, sortKey.value);
+  const groupedShows = utils.group(sortedShows, groupKey.value);
+  const chunkedShows = utils.chunk(groupedShows);
+  currentChunkIndexes.value = Array.from({ length: chunkedShows.length }).fill(0) as number[];
 
   return {
     filteredByRating,
     sortedShows,
-    groupedShows
-  }
-})
+    groupedShows,
+    chunkedShows
+  };
+};
+
+const processedShows = computed(computeProcessedShows);
+
 
 const {
   data: infiniteData,
@@ -152,7 +160,7 @@ watchDebounced(
       debouncedSearchQuery.value = searchQuery.value
     }
   },
-  { debounce: 500, maxWait: 1000 }
+  { debounce: 800, maxWait: 1000 }
 )
 
 provide('genres', genres)
@@ -167,4 +175,5 @@ provide('isMenuOpen', isMenuOpen)
 provide('numberOfShows', numberOfShows)
 provide('triggerFetch', triggerFetch)
 provide('fetchNextPage', fetchNextPage)
+provide('currentChunkIndexes', currentChunkIndexes);
 </script>

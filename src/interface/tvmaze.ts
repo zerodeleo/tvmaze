@@ -6,6 +6,10 @@ export interface GroupedShow {
   shows: Show[]
 }
 
+export interface ChunkedShow extends GroupedShow {
+  chunkedShows: Show[][]
+}
+
 export interface Show {
   id: number
   url: string
