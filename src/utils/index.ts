@@ -160,8 +160,6 @@ export const groupByDotNotationKey = <T>(arr: T[], groupKey: string): GroupedSho
       return
     }
     if (value) {
-      console.log(value)
-      console.log(item)
       if (!cache[value]) {
         cache[value] = []
       }
