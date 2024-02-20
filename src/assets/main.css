@@ -85,5 +85,5 @@ h6 {
 }
 
 .input {
-  @apply placeholder:text-black placeholder:font-montserrat bg-custom-100 px-5 py-2 w-full shadow-md rounded focus:ring-custom-400 focus:border-custom-400;
+  @apply placeholder:text-black placeholder:font-montserrat bg-custom-100 px-5 py-2 w-full shadow-md rounded focus:ring-custom-400 focus:border-custom-400 text-black;
 }
